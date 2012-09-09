@@ -1,0 +1,88 @@
+{namespace notify=Tx_Notify_ViewHelpers}
+{namespace fed=Tx_Fed_ViewHelpers}
+<f:layout name="Default" />
+
+<f:section name="Main">
+
+<f:if condition="{subscriptions}">
+	<f:then>
+		<f:for each="{subscriptions}" as="subscription">
+			<fed:data.var name="mostRecentUpdate" value="{fed:data.func(func: 'current', instance: subscription.updates)}" />
+			<f:if condition="{settings.display.timeline.disableControls} < 1">
+				<f:link.action action="reset" style="float: right;" title="Hide this update" rel="tooltip" class="btn btn-small" arguments="{subscription: subscription.uid}"><span class="icon icon-eye-close"></span></f:link.action>
+			</f:if>
+			<f:render section="Header" arguments="{_all}" />
+			<div class="table">
+				<f:render section="ItemType{subscription.mode}" arguments="{_all}" />
+			</div>
+		</f:for>
+		<f:if condition="{settings.display.timeline.disableControls} < 1">
+			<f:link.action action="reset" style="float: right;" rel="tooltip" title="Hide all updates" class="btn btn-primary white"><span class="icon icon-eye-close icon-white"></span></f:link.action>
+		</f:if>
+	</f:then>
+	<f:else>
+		<div class="alert alert-block alert-error fade in">
+			<h3 class="alert-heading">No updates found</h3>
+			<f:if condition="{subscriber}">
+				<f:then>
+					There are no subscriptions with your subscriber identity, {subscriber}.
+				</f:then>
+				<f:else>
+					No updates have happened since your subscriptions were last reset by a notification email or manually using subscription management or timeline controls - or possibly you currently have no active subscriptions.
+				</f:else>
+			</f:if>
+		</div>
+	</f:else>
+</f:if>
+
+<br style="clear: both;" />
+
+</f:section>
+
+<f:section name="Header">
+	<h3>
+		<f:format.date format="j/n">@{mostRecentUpdate.data.tstamp}</f:format.date>
+		<a href="{subscription.url}"><notify:ucfirst><f:if condition="{mostRecentUpdate.data.title}" then="{mostRecentUpdate.data.title}"
+			else="{notify:contentIdentity(subscription: subscription, rootLineEntryLevel: 1)}" /></notify:ucfirst></a>
+		<small><f:translate key="tx_notify_domain_model_subscription.mode.{subscription.mode}" /></small>
+	</h3>
+</f:section>
+
+<f:section name="ContentElement">
+	<f:link.page pageUid="{object.pid}">
+		<fed:data.var name="contentType"><notify:contentType record="{object}" /></fed:data.var>
+		<f:translate key="{contentType}" default="{contentType}" />
+	</f:link.page>
+</f:section>
+
+<f:section name="ItemType0">
+	<fed:comment comment="Type: Page" />
+	<p><strong>Updated content elements:</strong></p>
+	<ul>
+	<f:for each="{subscription.updates}" as="updatedObject" iteration="iteration">
+		<li>
+			<f:if condition="{updatedObject.data.header}" then="{updatedObject.data.header}">
+				<f:else>
+					<f:render section="ContentElement" arguments="{object: updatedObject.data}" />
+				</f:else>
+			</f:if>
+		</li>
+	</f:for>
+	</ul>
+</f:section>
+
+<f:section name="ItemType1">
+	<fed:comment comment="Type: Record" />
+	<fed:switch value="{subscription.sourceTable}">
+		<fed:case case="tt_content" break="TRUE">
+			<f:render section="ContentElement" arguments="{object: mostRecentUpdate.data}" />
+		</fed:case>
+		<fed:case case="default" break="TRUE">
+			<em><notify:ucfirst><notify:contentExtract subscription="{subscription}" record="{mostRecentUpdate.data}" /></notify:ucfirst></em>
+		</fed:case>
+	</fed:switch>
+</f:section>
+
+<f:section name="ItemType2">
+	<fed:comment comment="Type: File/Resource" />
+</f:section>

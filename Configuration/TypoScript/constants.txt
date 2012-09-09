@@ -1,0 +1,84 @@
+plugin.tx_notify {
+	view {
+		# cat=plugin.tx_notify/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:notify/Resources/Private/Templates/
+		# cat=plugin.tx_notify/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:notify/Resources/Private/Partials/
+		# cat=plugin.tx_notify/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:notify/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=plugin.tx_notify//a; type=int+; label=Default storage PID
+		storagePid = 
+	}
+	settings {
+		# cat=plugin.tx_notify//a; label=Enable configuration of display through the plugin. If you don't enable this, you must customize the TS manually for pages where the plugin is inserted.
+		enablePluginConfiguration = 1
+		source {
+			# cat=plugin.tx_notify//a; label=Class name implementing SubscriptionProviderInterface, defines how Subscriptions are made (this value us used as fallback if no mode is selected or doing a TS rendering of the subscribe component)
+		 	provider = Tx_Notify_Subscription_StandardSourceProvider
+		 	# cat=plugin.tx_notify//a; label=Mode of subscription - default is "0" meaning "page", but this can be overridden through the FlexForm of the plugin that inserts the subscription component. See documentation for information about modes
+		 	mode = 0
+		 	# cat=plugin.tx_notify//a; label=Modes of notification. Default is "email" but we support "twitter" if you fill in an identity and "sms" if you add an SMS Gateway class
+		 	modes = email
+		}
+		display {
+			# cat=plugin.tx_notify//a; label=Display type - supported is "image", "link" or "button". If you define an image along with display modes "link" and "button", that image is used as icon. Mode "button" simply uses configuration from "link" and "image" but wraps in a button
+			mode = link
+			image {
+				# cat=plugin.tx_notify//a; label=Icon image for subscribed state
+				subscribed = EXT:notify/Resources/Public/Icons/Subscribed.png
+				# cat=plugin.tx_notify//a; label=Icon image for unsubscribed state
+				unsubscribed = EXT:notify/Resources/Public/Icons/Unsubscribed.png
+				# cat=plugin.tx_notify//a; label=Position of image, if used in combination with a link or button
+				position = left
+			}
+			link {
+				# cat=plugin.tx_notify//a; label=Link text for subscribed state
+				subscribed = subscribed!
+				# cat=plugin.tx_notify//a; label=Link text for unsubscribed state
+				unsubscribed = subscribe
+				# cat=plugin.tx_notify//a; label=Title for link, is converted into a tooltip - leave empty for no title
+				title = Click to change status
+			}
+			button {
+				# cat=plugin.tx_notify//a; label=CSS class or classes for the rendered button. This default class is a nice case for Twitter Bootstrap
+				class = subscribe btn-small
+			}
+			timeline {
+				# cat=plugin.tx_notify//a; label=Disable the controls to dismiss updates from the timeline
+				disableControls = 0
+			}
+		}
+		twitter {
+			# cat=plugin.tx_notify//a; label=When subscriber is a Twitter name: "via" identity for tweet
+			via = Notify extension for TYPO3
+			# cat=plugin.tx_notify//a; label=When subscriber is a Twitter name: twweet from this username
+			from =
+			# cat=plugin.tx_notify//a; label=When subscriber is a Twitter name: Key to Twitter, used to authorize tweeting
+			key =
+		}
+		sms {
+			# cat=plugin.tx_notify//a; label=To enable SMS sending, any extension may implement Tx_Notify_Communication_ShortMessageServiceInterface and enter a class name here. Filling this value automatically enables SMS notifications.
+			gateway =
+		}
+		email {
+			# cat=plugin.tx_notify//a; label=Emails are sent from this name
+			from.name = Webmaster
+			# cat=plugin.tx_notify//a; label=Emails are sent from this email address
+			from.email = www@localhost
+			# cat=plugin.tx_notify//a; label=Emails are sent with this subject (if not overridden by internal or subclassed logic)
+			subject = Subscription notification
+			template {
+				# cat=plugin.tx_notify//a; label=Partial template beneath plugin.tx_notify.view.partialRootPath containing the email template
+				templatePathAndFilename = EXT:notify/Resources/Private/Partials/Email/Default.html
+				# cat=plugin.tx_notify//a; label=If a section is used in the Partial template, enter the name here
+				section = Body
+				# cat=plugin.tx_notify//a; label=If necessary, assign an array of template variables here.
+				variables =
+				# cat=plugin.tx_notify//a; label=Map default View path configuration - override as necessary
+				view < plugin.tx_notify.view
+			}
+		}
+	}
+}

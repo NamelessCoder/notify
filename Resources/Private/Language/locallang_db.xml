@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'notify'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_notify_domain_model_subscription">Subscription</label>
+			<label index="tx_notify_domain_model_subscription.mode">Mode</label>
+			<label index="tx_notify_domain_model_subscription.mode.0">Page</label>
+			<label index="tx_notify_domain_model_subscription.mode.1">Record</label>
+			<label index="tx_notify_domain_model_subscription.mode.2">Resource</label>
+			<label index="tx_notify_domain_model_subscription.source">Source File/resource</label>
+			<label index="tx_notify_domain_model_subscription.source_table">Source Table</label>
+			<label index="tx_notify_domain_model_subscription.source_fields">Source Table Fields</label>
+			<label index="tx_notify_domain_model_subscription.source_uid">Source record</label>
+			<label index="tx_notify_domain_model_subscription.active">Active</label>
+			<label index="tx_notify_domain_model_subscription.checksum">Checksum</label>
+			<label index="tx_notify_domain_model_subscription.last_notification_date">Last Notification Date</label>
+			<label index="tx_notify_domain_model_subscription.subscriber">Subscriber</label>
+            <label index="tx_notify_domain_model_subscription.url">URL</label>
+
+            <label index="task.notification.name">Notify: Send notifications</label>
+            <label index="task.notification.description">Send out digest electronic message about all updated objects.</label>
+		</languageKey>
+	</data>
+</T3locallang>

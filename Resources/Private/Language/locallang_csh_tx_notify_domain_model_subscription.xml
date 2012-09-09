@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description>Context Sensitive Help (CSH) for table tx_notify_domain_model_subscription</description>
+		<type>CSH</type>
+		<csh_table>tx_notify_domain_model_subscription</csh_table>
+	</meta>
+	<data type="array">
+	<languageKey index="default" type="array">
+			<label index="mode.description">Subscription mode</label>
+			<label index="source.description">Source of subscribed content</label>
+			<label index="source_fields.description">Value which triggers a notification</label>
+			<label index="active.description">Active subscription</label>
+			<label index="checksum.description">Checksum of last value set</label>
+			<label index="last_notification_date.description">Last date of notification</label>
+		</languageKey>
+	</data>
+</T3locallang>

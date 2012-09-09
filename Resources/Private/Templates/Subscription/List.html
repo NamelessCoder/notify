@@ -1,0 +1,44 @@
+{namespace notify=Tx_Notify_ViewHelpers}
+<f:layout name="Default" />
+
+<f:section name="Main">
+
+<f:if condition="{subscriptions}">
+	<f:then>
+		<table  class="tx_notify table table-condensed table-bordered">
+			<f:groupedFor each="{subscriptions}" as="subscriptionsInMode" groupKey="subscriptionMode" groupBy="mode">
+				<tr>
+					<th colspan="3">
+						<h3><f:translate key="tx_notify_domain_model_subscription.mode.{subscriptionMode}" default="Mode {subscriptionMode}" /></h3>
+					</th>
+				</tr>
+				<f:for each="{subscriptionsInMode}" as="subscription">
+					<tr>
+						<td colspan="{f:if(condition: subscription.sourceFields, else: 2)}"><notify:contentIdentity subscription="{subscription}" /></td>
+						<f:if condition="{subscription.sourceFields}"><td style="width: 30px; white-space: nowrap;"><span class="label">{subscription.sourceFields}</span></td></f:if>
+						<td style="width: 60px; white-space: nowrap;">
+							<notify:widget.subscribe subscription="{subscription}" url="{subscription.url}"
+								settings="{display: { mode: 'button', button: {class: 'btn btn-mini'}, link: {subscribed: '<span class=\"icon-off icon-white\"></span>', unsubscribed: '<span class=\"icon-off\"></span>'}}}" />
+							<f:link.action action="delete" arguments="{subscription: subscription.uid}" class="btn btn-inverse btn-mini"><span class="icon-trash icon-white"></span></f:link.action>
+						</td>
+					</tr>
+				</f:for>
+			</f:groupedFor>
+		</table>
+	</f:then>
+	<f:else>
+		<div class="alert alert-block alert-error fade in">
+			<f:if condition="{subscriber}">
+				<f:then>
+					There are no subscriptions with your subscriber identity, {subscriber}.
+				</f:then>
+				<f:else>
+					You have not yet subscribed to anything. Once you have subscribed to something your subscriptions will be listed here.
+				</f:else>
+			</f:if>
+		</div>
+	</f:else>
+</f:if>
+
+
+</f:section>

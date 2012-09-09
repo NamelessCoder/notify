@@ -1,0 +1,58 @@
+plugin.tx_notify {
+	view {
+		templateRootPath = {$plugin.tx_notify.view.templateRootPath}
+		partialRootPath = {$plugin.tx_notify.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_notify.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_notify.persistence.storagePid}
+	}
+	settings {
+		source {
+			provider = {$plugin.tx_notify.settings.source.provider}
+			mode = {$plugin.tx_notify.settings.source.mode}
+			modes = {$plugin.tx_notify.settings.source.modes}
+		}
+		display {
+			mode = {$plugin.tx_notify.settings.display.mode}
+			image {
+				subscribed = {$plugin.tx_notify.settings.display.image.subscribed}
+				unsubscribed = {$plugin.tx_notify.settings.display.image.unsubscribed}
+				position = {$plugin.tx_notify.settings.display.image.position}
+			}
+			link {
+				subscribed = {$plugin.tx_notify.settings.display.link.subscribed}
+				unsubscribed = {$plugin.tx_notify.settings.display.link.unsubscribed}
+				title = {$plugin.tx_notify.settings.display.link.title}
+			}
+			button {
+				class = {$plugin.tx_notify.settings.display.button.class}
+			}
+			timeline {
+				disableControls = {$plugin.tx_notify.settings.display.timeline.disableControls}
+			}
+		}
+		twitter {
+			via = {$plugin.tx_notify.settings.twitter.via}
+			from = {$plugin.tx_notify.settings.twitter.from}
+			key = {$plugin.tx_notify.settings.twitter.key}
+		}
+		sms {
+			gateway = {$plugin.tx_notify.settings.sms.gateway}
+		}
+		email {
+			from.name = {$plugin.tx_notify.settings.email.from.name}
+			from.email = {$plugin.tx_notify.settings.email.from.email}
+			subject = {$plugin.tx_notify.settings.email.subject}
+			template {
+            	templatePathAndFilename = {$plugin.tx_notify.settings.email.template.templatePathAndFilename}
+            	section = {$plugin.tx_notify.settings.email.template.section}
+            	variables = {$plugin.tx_notify.settings.email.template.variables}
+            	view < plugin.tx_notify.view
+            }
+		}
+	}
+}
+
+page.includeJS.52356 = EXT:notify/Resources/Public/Javascripts/Subscribe.plugin.js
+

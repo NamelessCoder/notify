@@ -1,0 +1,5 @@
+{namespace notify=Tx_Notify_ViewHelpers}
+
+<f:layout name="PlaintextEmail.txt" />
+
+<f:render section="Body" />

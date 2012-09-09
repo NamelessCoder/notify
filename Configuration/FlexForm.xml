@@ -1,0 +1,135 @@
+{namespace flux=Tx_Flux_ViewHelpers}
+{namespace fed=Tx_Fed_ViewHelpers}
+{namespace notify=Tx_Notify_ViewHelpers}
+<f:section name="Configuration">
+	<flux:flexform id="notify" label="Subscriptions">
+
+	</flux:flexform>
+</f:section>
+<f:section name="SubscribeComponentConfiguration">
+	<flux:flexform id="notify-subcribe-component" label="Subscription component">
+		<flux:flexform.sheet name="modes" label="Modes">
+			<f:render section="ModeConfiguration" />
+		</flux:flexform.sheet>
+		<flux:flexform.sheet name="display" label="Display ({notify:ucfirst(string: settings.display.mode)})">
+			<f:render section="DisplayConfiguration" />
+			<f:render section="{notify:ucfirst(string: settings.display.mode)}DisplayConfiguration" optional="TRUE" />
+		</flux:flexform.sheet>
+		<flux:flexform.sheet name="subscription" label="Subscription">
+			<f:render section="SubscriptionConfigurationMode{settings.source.mode}" optional="TRUE" />
+		</flux:flexform.sheet>
+	</flux:flexform>
+</f:section>
+
+<f:section name="SubscriptionsConfiguration">
+	<flux:flexform id="notify-subscriptions" label="Subscriptions">
+
+	</flux:flexform>
+</f:section>
+
+<f:section name="TimelineConfiguration">
+	<flux:flexform id="notify-timeline" label="Timeline">
+		<flux:flexform.field.checkbox name="settings.display.timeline.disableControls" label="Disable the controls to dismiss updates" />
+	</flux:flexform>
+</f:section>
+
+<f:section name="ModeConfiguration">
+	<flux:flexform.field.select name="settings.display.mode" label="Display mode" requestUpdate="TRUE"
+		items="{0: {0: '', 1: ''}, 1: {0: 'button', 1: 'button'}, 2: {0: 'image', 1: 'image'}, 3: {0: 'link', 1: 'link'},
+		4: {0: 'splitbutton', 1: 'splitbutton'}, 5: {0: 'checkbox', 1: 'checkbox'}, 6: {0: 'radio', 1: 'radio'},
+		7: {0: 'bootstrapicon', 1: 'bootstrapicon'}}" />
+	<flux:flexform.field.select name="settings.source.mode" label="Subscription mode" requestUpdate="TRUE"
+		items="{0: {0: '', 1: ''}, 1: {0: '0', 1: 'page'}, 2: {0: '1', 1: 'record'}, 3: {0: '2', 1: 'file'}}" />
+</f:section>
+
+
+
+
+
+<f:section name="DisplayConfiguration">
+</f:section>
+
+<f:section name="ButtonDisplayConfiguration">
+	<f:render section="LinkDisplayConfiguration" />
+</f:section>
+
+<f:section name="ImageDisplayConfiguration">
+	<f:render section="LinkDisplayConfiguration" />
+</f:section>
+
+<f:section name="SplitbuttonDisplayConfiguration">
+</f:section>
+
+<f:section name="CheckboxDisplayConfiguration">
+	<f:render section="LinkDisplayConfiguration" />
+	<flux:flexform.field.select name="settings.display.checkbox.position" label="Icon alignment" size="1" commaSeparatedItems="left,right" />
+</f:section>
+
+<f:section name="RadioDisplayConfiguration">
+	<f:render section="LinkDisplayConfiguration" />
+	<flux:flexform.field.select name="settings.display.radio.position" label="Icon alignment" size="1" commaSeparatedItems="left,right" />
+</f:section>
+
+<f:section name="BootstrapiconDisplayConfiguration">
+	<f:render section="LinkDisplayConfiguration" />
+	<flux:flexform.field.select name="settings.display.bootstrapicon.position" label="Icon alignment" size="1" commaSeparatedItems="left,right" />
+	<flux:flexform.field.select name="settings.display.bootstrapicon.subscribed" label="Icon, subscribed state" size="1" commaSeparatedItems="eye-close,eye-open,share,check,magnet,info-sign" />
+	<flux:flexform.field.select name="settings.display.bootstrapicon.unsubscribed" label="Icon, unsubscribed state" size="1" commaSeparatedItems="eye-close,eye-open,share,check,magnet,info-sign" />
+	<flux:flexform.field.checkbox name="settings.display.bootstrapicon.noLabel" label="Don't display labels, just add as labels title attribute" />
+</f:section>
+
+<f:section name="LinkDisplayConfiguration">
+	<flux:flexform.field.input name="settings.display.link.subscribed" label="Link/title/button text for subscribed state" default="{settings.display.link.subscribed}" />
+	<flux:flexform.field.input name="settings.display.link.unsubscribed" label="Link/title/button text for unsubscribed state" default="{settings.display.link.unsubscribed}" />
+	<f:if condition="{0: settings.display.mode} != {0: 'link'}">
+		<flux:flexform.field.input name="settings.display.image.subscribed" label="Image for subscribed state" default="{settings.display.image.subscribed}">
+				<flux:flexform.field.wizard.link />
+			</flux:flexform.field.input>
+			<flux:flexform.field.input name="settings.display.image.unsubscribed" label="Image for unsubscribed state" default="{settings.display.image.unsubscribed}">
+				<flux:flexform.field.wizard.link />
+		</flux:flexform.field.input>
+		<flux:flexform.field.select name="settings.display.image.position" label="Icon position" commaSeparatedItems="left,right" />
+	</f:if>
+</f:section>
+
+
+
+
+<f:section name="SubscriptionConfigurationMode">
+</f:section>
+
+<f:section name="SubscriptionConfigurationMode0">
+	<f:render section="SubscriptionConfigurationMode" />
+	<flux:flexform.field.tree name="settings.subscription.page.uid" label="Page to subscribe to - empty for current page" table="pages" parentField="pid" size="25" maxItems="999" />
+</f:section>
+
+<f:section name="SubscriptionConfigurationMode1">
+	<f:render section="SubscriptionConfigurationMode" />
+	<flux:flexform.field.select name="settings.source.table" label="Table containing records. Save to reload with additional options." items="{notify:tables()}" requestUpdate="TRUE" />
+	<f:if condition="{settings.source.table}">
+		<f:if condition="{fed:data.sql(query: 'SELECT * FROM {settings.source.table} LIMIT 1')}">
+			<flux:flexform.field.group name="settings.source.uid" label="Record from {settings.source.table} to subscribe to"
+				internalType="db" size="1" table="{settings.source.table}" allowed="{settings.source.table}" maxItems="1" suggest="TRUE" />
+			<flux:flexform.field.select name="settings.source.fields" label="Fields to monitor for changes" items="{notify:fields(table: settings.source.table)}"
+				size="10" multiple="1" maxItems="999" />
+		</f:if>
+	</f:if>
+</f:section>
+
+<f:section name="SubscriptionConfigurationMode2">
+	<f:render section="SubscriptionConfigurationMode" />
+	<flux:flexform.field.select name="settings.subscription.content.mode" label="Content subscription mode" commaSeparatedItems="specific,all,updated,added" requestUpdate="TRUE" />
+	<f:if condition="{0: settings.source.mode} != {0: 'specific'}">
+		<flux:flexform.field.checkbox name="settings.subscription.content.respectStoragePageUid" label="Notifications must only be triggered by content on this/current page" />
+	</f:if>
+	<f:if condition="{settings.source.mode}">
+		<f:render section="{notify:ucfirst(string: settings.subscription.content.mode)}ContentSubscriptionConfiguration" optional="TRUE" />
+	</f:if>
+</f:section>
+		
+<f:section name="SpecificContentSubscriptionConfiguration">
+	<flux:flexform.field.group internalType="db" name="settings.subscription.content.uids" label="Content element(s)" size="10" table="tt_content" suggest="TRUE" />
+</f:section>
+
+<f:section name="Preview">
+</f:section>
