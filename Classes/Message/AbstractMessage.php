@@ -7,6 +7,16 @@ class Tx_Notify_Message_AbstractMessage {
 	protected $recipient;
 
 	/**
+	 * @var array
+	 */
+	protected $carbonCopies = array();
+
+	/**
+	 * @var array
+	 */
+	protected $blindCarbonCopies = array();
+
+	/**
 	 * @var mixed
 	 */
 	protected $sender;
@@ -300,11 +310,78 @@ class Tx_Notify_Message_AbstractMessage {
 		$copy->setBody($content, $this->bodyIsFilePathAndFilename);
 		$copy->setRecipient($recipient);
 		$copy->setSender($sender);
+
 		try {
 			return $this->emailService->send($copy);
 		} catch (Exception $e) {
 			$newException = new Exception('Errors while sending Message - see previous exception attached to this Exception. Message was: ' . $e->getMessage(), 1334867135);
 			throw $newException;
+		}
+	}
+
+	/**
+	 * @param array $carbonCopies
+	 */
+	public function setCarbonCopies($carbonCopies) {
+		$this->carbonCopies = $carbonCopies;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCarbonCopies() {
+		return $this->carbonCopies;
+	}
+
+	/**
+	 * @param mixed $recipient
+	 */
+	public function addCarbonCopy($recipient) {
+		if (in_array($recipient, $this->carbonCopies) === FALSE) {
+			array_push($this->carbonCopies, $recipient);
+		}
+	}
+
+	/**
+	 * @param mixed $recipient
+	 */
+	public function removeCarbonCopy($recipient) {
+		if (in_array($recipient, $this->carbonCopies) === TRUE) {
+			$index = array_search($recipient, $this->carbonCopies);
+			unset($this->carbonCopies[$index]);
+		}
+	}
+
+	/**
+	 * @param array $blindCarbonCopies
+	 */
+	public function setBlindCarbonCopies($blindCarbonCopies) {
+		$this->blindCarbonCopies = $blindCarbonCopies;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getBlindCarbonCopies() {
+		return $this->blindCarbonCopies;
+	}
+
+	/**
+	 * @param mixed $recipient
+	 */
+	public function addBlindCarbonCopy($recipient) {
+		if (in_array($recipient, $this->blindCarbonCopies) === FALSE) {
+			array_push($this->blindCarbonCopies, $recipient);
+		}
+	}
+
+	/**
+	 * @param mixed $recipient
+	 */
+	public function removeBlindCarbonCopy($recipient) {
+		if (in_array($recipient, $this->blindCarbonCopies) === TRUE) {
+			$index = array_search($recipient, $this->blindCarbonCopies);
+			unset($this->blindCarbonCopies[$index]);
 		}
 	}
 
