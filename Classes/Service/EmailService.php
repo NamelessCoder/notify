@@ -34,6 +34,18 @@
 class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Message_DeliveryServiceInterface {
 
 	/**
+	 * @var Tx_Extbase_Object_ObjectManagerInterface
+	 */
+	protected $objectManager;
+
+	/**
+	 * @param Tx_Extbase_Object_ObjectManagerInterface $objectManager
+	 */
+	public function injectObjectManager(Tx_Extbase_Object_ObjectManagerInterface $objectManager) {
+		$this->objectManager = $objectManager;
+	}
+
+	/**
 	 * Send an email. Supports any to-string-convertible parameter types
 	 *
 	 * @param mixed $subject
