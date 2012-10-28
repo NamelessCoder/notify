@@ -3,7 +3,7 @@
  *  Copyright notice
  *
  *  (c) 2012 Claus Due <claus@wildside.dk>, Wildside A/S
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,6 +26,7 @@
 /**
  * @package Notify
  * @subpackage Controller
+ * @route NoMatch('bypass')
  */
 class Tx_Notify_Controller_SubscriptionController extends Tx_Extbase_MVC_Controller_ActionController {
 
