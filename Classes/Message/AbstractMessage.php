@@ -248,7 +248,7 @@ class Tx_Notify_Message_AbstractMessage {
 		if (empty($recipient)) {
 			throw new Exception('Unable to determine recipient type (data vas ' . var_export($this->recipient, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
 		}
-		if (empty($recipient)) {
+		if (empty($sender)) {
 			throw new Exception('Unable to determine sender type (data vas ' . var_export($this->sender, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
 		}
 
