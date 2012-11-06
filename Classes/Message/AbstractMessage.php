@@ -42,6 +42,11 @@ class Tx_Notify_Message_AbstractMessage {
 	protected $attachments = array();
 
 	/**
+	 * @var boolean
+	 */
+	protected $prepared = FALSE;
+
+	/**
 	 * Template variable storage. RESERVED NAMES are the current values. These values are set internally when sending
 	 *
 	 * @var array
@@ -237,12 +242,31 @@ class Tx_Notify_Message_AbstractMessage {
 	}
 
 	/**
-	 * Finally send the Message - usually handled by a base class such as FluidEmail, uses the appropriate Service to deliver the Message and the appropriate logic to validate and render the message (and template, if any)
+	 * Finally send the Message - usually handled by a base class such as FluidEmail,
+	 * uses the appropriate Service to deliver the Message and the appropriate logic
+	 * to validate and render the message (and template, if any)
 	 *
 	 * @return boolean TRUE on success
 	 * @throws Exception
 	 */
 	public function send() {
+		$copy = $this->prepare();
+		try {
+			return $this->emailService->send($copy);
+		} catch (Exception $e) {
+			$newException = new Exception('Errors while sending Message - see previous exception attached to this Exception. Message was: ' . $e->getMessage(), 1334867135);
+			throw $newException;
+		}
+	}
+
+	/**
+	 * Prepare the data used in the email - body, subject, attachemts etc. - and return
+	 * a copy of this object.
+	 *
+	 * @return Tx_Notify_Message_MessageInterface
+	 * @throws Exception
+	 */
+	public function prepare() {
 		$recipient = $this->getRfcFormattedRecipientNameAndAddress();
 		$sender = $this->getRfcFormattedSenderNameAndAddress();
 		if (empty($recipient)) {
@@ -268,17 +292,23 @@ class Tx_Notify_Message_AbstractMessage {
 				$content = str_replace('###' . $name . '###' , $value, $content);
 			}
 		} else {
-			/** @var Tx_Fluid_View_StandaloneView $template */
 			$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-			#syslog(LOG_ERR, var_export(array_keys($typoScriptSettings), TRUE));
 			$paths = Tx_Fed_Utility_Path::translatePath($typoScriptSettings['plugin.']['tx_notify.']['settings.']['email.']['template.']['view.']);
-			$template = $this->objectManager->create('Tx_Fluid_View_StandaloneView');
+			/** @var $template Tx_Flux_MVC_View_ExposedStandaloneView */
+			$template = $this->objectManager->create('Tx_Flux_MVC_View_ExposedStandaloneView');
 			$this->variables['attachments'] = $this->attachments;
 			$this->variables['recipient'] = $this->recipient;
 			$template->assignMultiple($this->variables);
 			$template->setTemplateSource($content);
 			$template->setLayoutRootPath($paths['layoutRootPath']);
 			$template->setPartialRootPath($paths['partialRootPath']);
+
+				// extract media added in the template
+			$media = (array) $template->getStoredVariable('Tx_Notify_ViewHelpers_Message_EmailAttachmentViewHelper', 'media');
+			foreach ($media as $md5 => $attachmentFilePathAndFilename) {
+				$this->addAttachment($attachmentFilePathAndFilename, $md5);
+			}
+
 			$content = $template->render();
 		}
 
@@ -311,12 +341,9 @@ class Tx_Notify_Message_AbstractMessage {
 		$copy->setRecipient($recipient);
 		$copy->setSender($sender);
 
-		try {
-			return $this->emailService->send($copy);
-		} catch (Exception $e) {
-			$newException = new Exception('Errors while sending Message - see previous exception attached to this Exception. Message was: ' . $e->getMessage(), 1334867135);
-			throw $newException;
-		}
+		$this->setPrepared(TRUE);
+
+		return $copy;
 	}
 
 	/**
@@ -383,6 +410,20 @@ class Tx_Notify_Message_AbstractMessage {
 			$index = array_search($recipient, $this->blindCarbonCopies);
 			unset($this->blindCarbonCopies[$index]);
 		}
+	}
+
+	/**
+	 * @param boolean $prepared
+	 */
+	public function setPrepared($prepared) {
+		$this->prepared = $prepared;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getPrepared() {
+		return $this->prepared;
 	}
 
 }

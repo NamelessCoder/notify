@@ -97,4 +97,25 @@ interface Tx_Notify_Message_MessageInterface {
 	 */
 	public function send();
 
+	/**
+	 * Prepare the Message - collect attachment, render body etc.
+	 *
+	 * @abstract
+	 * @return Tx_Notify_Message_MessageInterface
+	 * @throws Exception
+	 */
+	public function prepare();
+
+	/**
+	 * @abstract
+	 * @param boolean $prepared
+	 */
+	public function setPrepared($prepared);
+
+	/**
+	 * @abstract
+	 * @return boolean
+	 */
+	public function getPrepared();
+
 }

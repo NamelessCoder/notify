@@ -85,7 +85,12 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 	 * @param Tx_Notify_Message_MessageInterface $message The message to send
 	 */
 	public function send(Tx_Notify_Message_MessageInterface $message) {
-		$sent = $this->mail($message->getSubject(), $message->getBody(), $message->getRecipient(), $message->getSender());
+		if ($message->getPrepared() !== TRUE) {
+			$copy = $message->prepare();
+		} else {
+			$copy = clone $message;
+		}
+		$sent = $this->mail($copy->getSubject(), $copy->getBody(), $copy->getRecipient(), $copy->getSender());
 		return $sent;
 	}
 
