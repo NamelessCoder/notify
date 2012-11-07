@@ -330,8 +330,6 @@ class Tx_Notify_Message_AbstractMessage {
 		$this->setPrepared(TRUE);
 		$copy = clone $this;
 		$copy->setBody($content, $this->bodyIsFilePathAndFilename);
-		$copy->setRecipient($recipient);
-		$copy->setSender($sender);
 		return $copy;
 	}
 
