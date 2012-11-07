@@ -145,7 +145,7 @@ class Tx_Notify_Message_AbstractMessage {
 	protected function formatRfcAddress($address) {
 		if (is_array($address) === TRUE) {
 			reset($address);
-			$address = key($address) . ' <' . current($address) . '>';
+			$address = current($address) . ' <' . key($address) . '>';
 		} elseif (is_object($address) === TRUE) {
 			if (method_exists($address, '__toString') === TRUE) {
 				$address = (string) $address;

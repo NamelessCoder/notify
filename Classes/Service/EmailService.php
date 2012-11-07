@@ -34,6 +34,11 @@
 class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Message_DeliveryServiceInterface {
 
 	/**
+	 * @var array
+	 */
+	protected $configuration = array();
+
+	/**
 	 * @var Tx_Extbase_Object_ObjectManagerInterface
 	 */
 	protected $objectManager;
@@ -97,10 +102,10 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 	 * @param Tx_Notify_Message_MessageInterface $message The message to send
 	 */
 	public function send(Tx_Notify_Message_MessageInterface $message) {
-		$settings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'Notify', 'Component');
+		$settings = $this->getComponentConfiguration();
 		if (!$message->getSender()) {
 			$configuredSender = $settings['email']['from'];
-			$message->setSender(isset($configuredSender['name']) ? array($configuredSender['email'], $configuredSender['name']) : $configuredSender['email']);
+			$message->setSender(isset($configuredSender['name']) ? array($configuredSender['email'] => $configuredSender['name']) : $configuredSender['email']);
 		}
 		if (!$message->getSubject()) {
 			$message->setSubject($settings['email']['subject']);
@@ -129,7 +134,7 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 	protected function formatRfcAddress($address) {
 		if (is_array($address) === TRUE) {
 			reset($address);
-			$address = key($address) . ' <' . current($address) . '>';
+			$address = current($address) . ' <' . key($address) . '>';
 		} elseif (is_object($address) === TRUE) {
 			if (method_exists($address, '__toString') === TRUE) {
 				$address = (string) $address;
@@ -144,6 +149,33 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 			}
 		}
 		return $address;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getComponentConfiguration() {
+		if (count($this->configuration) === 0) {
+			$settings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+			$this->configuration  = $this->typoScriptArrayToPlainArray($settings['plugin.']['tx_notify.']['settings.']);
+		}
+		return $this->configuration;
+	}
+
+	/**
+	 * @param array $array
+	 * @return array
+	 */
+	protected function typoScriptArrayToPlainArray(array $array) {
+		$transformed = array();
+		foreach ($array as $key => $member) {
+			$key = trim($key, '.');
+			if (is_array($member) === TRUE) {
+				$member = $this->typoScriptArrayToPlainArray($member);
+			}
+			$transformed[$key] = $member;
+		}
+		return $transformed;
 	}
 
 }

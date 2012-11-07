@@ -9,7 +9,7 @@ plugin.tx_notify {
 	}
 	persistence {
 		# cat=plugin.tx_notify//a; type=int+; label=Default storage PID
-		storagePid = 
+		storagePid =
 	}
 	settings {
 		# cat=plugin.tx_notify//a; label=Enable configuration of display through the plugin. If you don't enable this, you must customize the TS manually for pages where the plugin is inserted.
@@ -66,7 +66,7 @@ plugin.tx_notify {
 			# cat=plugin.tx_notify//a; label=Emails are sent from this name
 			from.name = Webmaster
 			# cat=plugin.tx_notify//a; label=Emails are sent from this email address
-			from.email = www@localhost
+			from.email = www@localhost.tld
 			# cat=plugin.tx_notify//a; label=Emails are sent with this subject (if not overridden by internal or subclassed logic)
 			subject = Subscription notification
 			template {
