@@ -97,6 +97,14 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 	 * @param Tx_Notify_Message_MessageInterface $message The message to send
 	 */
 	public function send(Tx_Notify_Message_MessageInterface $message) {
+		$settings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'Notify', 'Component');
+		if (!$message->getSender()) {
+			$configuredSender = $settings['email']['from'];
+			$message->setSender(isset($configuredSender['name']) ? array($configuredSender['email'], $configuredSender['name']) : $configuredSender['email']);
+		}
+		if (!$message->getSubject()) {
+			$message->setSubject($settings['email']['subject']);
+		}
 		if ($message->getPrepared() !== TRUE) {
 			$copy = $message->prepare();
 		} else {
@@ -105,10 +113,10 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 		$recipient = $copy->getRfcFormattedRecipientNameAndAddress();
 		$sender = $copy->getRfcFormattedSenderNameAndAddress();
 		if (empty($recipient)) {
-			throw new Exception('Unable to determine recipient type (data vas ' . var_export($this->recipient, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
+			throw new Exception('Unable to determine recipient type (data vas ' . var_export($recipient, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
 		}
 		if (empty($sender)) {
-			throw new Exception('Unable to determine sender type (data vas ' . var_export($this->sender, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
+			throw new Exception('Unable to determine sender type (data vas ' . var_export($sender, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
 		}
 		$sent = $this->mail($copy->getSubject(), $copy->getBody(), $recipient, $sender);
 		return $sent;
