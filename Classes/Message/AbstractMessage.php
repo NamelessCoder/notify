@@ -336,13 +336,11 @@ class Tx_Notify_Message_AbstractMessage {
 			// The EmailService requires the variables to be proper strings and cannot perform transformations.
 			// ...which means: if you create a custom Message type make sure it also follows this behavior (or returns
 			// data types that your custom DeliveryServiceInterface implementing class understands or can transform)
+		$this->setPrepared(TRUE);
 		$copy = clone $this;
 		$copy->setBody($content, $this->bodyIsFilePathAndFilename);
 		$copy->setRecipient($recipient);
 		$copy->setSender($sender);
-
-		$this->setPrepared(TRUE);
-
 		return $copy;
 	}
 
