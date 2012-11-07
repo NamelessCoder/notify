@@ -102,7 +102,15 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 		} else {
 			$copy = clone $message;
 		}
-		$sent = $this->mail($copy->getSubject(), $copy->getBody(), $copy->getRecipient(), $copy->getSender());
+		$recipient = $copy->getRfcFormattedRecipientNameAndAddress();
+		$sender = $copy->getRfcFormattedSenderNameAndAddress();
+		if (empty($recipient)) {
+			throw new Exception('Unable to determine recipient type (data vas ' . var_export($this->recipient, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
+		}
+		if (empty($sender)) {
+			throw new Exception('Unable to determine sender type (data vas ' . var_export($this->sender, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
+		}
+		$sent = $this->mail($copy->getSubject(), $copy->getBody(), $recipient, $sender);
 		return $sent;
 	}
 
