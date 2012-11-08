@@ -1,0 +1,24 @@
+{namespace notify=Tx_Notify_ViewHelpers}
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<f:layout name="Message" />
+
+<fed:hide>
+	<f:render section="Resources" optional="TRUE" />
+</fed:hide>
+
+<div class="mail-header">
+	<f:render section="Header" optional="TRUE" />
+</div>
+<div class="mail-header-submenu">
+	<f:render section="Submenu" optional="TRUE" />
+</div>
+<div class="mail-body">
+	<f:render section="Main" optional="TRUE" />
+</div>
+<div class="black-box">
+	<f:render section="BlackBox" optional="TRUE" />
+</div>
+<div class="mail-footer">
+	<f:render section="Footer" optional="TRUE" />
+</div>

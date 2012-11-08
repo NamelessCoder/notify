@@ -277,6 +277,8 @@ class Tx_Notify_Message_AbstractMessage {
 		} else {
 			$content = $body;
 		}
+		#Tx_Extbase_Utility_Debugger::var_dump($content);
+		#exit();
 		$isFluidTemplate = strpos($content, '{namespace') !== FALSE;
 		if ($isFluidTemplate === FALSE) {
 			foreach ($this->variables as $name=>$value) {
@@ -284,44 +286,25 @@ class Tx_Notify_Message_AbstractMessage {
 			}
 		} else {
 			$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-			$paths = Tx_Fed_Utility_Path::translatePath($typoScriptSettings['plugin.']['tx_notify.']['settings.']['email.']['template.']['view.']);
+			$paths = Tx_Fed_Utility_Path::translatePath($typoScriptSettings['plugin.']['tx_notify.']['view.']);
 			/** @var $template Tx_Flux_MVC_View_ExposedStandaloneView */
-			$template = $this->objectManager->create('Tx_Flux_MVC_View_ExposedStandaloneView');
 			$this->variables['attachments'] = $this->attachments;
 			$this->variables['recipient'] = $this->recipient;
+			$template = $this->objectManager->create('Tx_Flux_MVC_View_ExposedStandaloneView');
+			$template->setFormat('eml');
 			$template->assignMultiple($this->variables);
 			$template->setTemplateSource($content);
 			$template->setLayoutRootPath($paths['layoutRootPath']);
 			$template->setPartialRootPath($paths['partialRootPath']);
 
 				// extract media added in the template
-			$media = (array) $template->getStoredVariable('Tx_Notify_ViewHelpers_Message_EmailAttachmentViewHelper', 'media');
-			foreach ($media as $md5 => $attachmentFilePathAndFilename) {
-				$this->addAttachment($attachmentFilePathAndFilename, $md5);
+			$media = (array) $template->getStoredVariable('Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper', 'media');
+			foreach ($media as $attachmentFilePathAndFilename) {
+				$this->addAttachment($attachmentFilePathAndFilename, 'File: ' . basename($attachmentFilePathAndFilename));
 			}
 
 			$content = $template->render();
 		}
-
-			// process the content body a little, plaintext emails require some trimming.
-		$lines = explode("\n", trim($content));
-		$whiteLines = 0;
-		foreach ($lines as $index => $line) {
-			$line = trim($line);
-			if ($line === '') {
-				$whiteLines++;
-				if ($whiteLines > 1) {
-					unset($lines[$index]);
-					continue;
-				} else {
-					$lines[$index] = '';
-				}
-			} else {
-				$whiteLines = 0;
-			}
-			$lines[$index] = $line;
-		}
-		$content = implode("\n", $lines);
 
 			// NOTE: we clone this current Message to preserve the current object-type variables that have been set.
 			// The EmailService requires the variables to be proper strings and cannot perform transformations.
@@ -329,7 +312,7 @@ class Tx_Notify_Message_AbstractMessage {
 			// data types that your custom DeliveryServiceInterface implementing class understands or can transform)
 		$this->setPrepared(TRUE);
 		$copy = clone $this;
-		$copy->setBody($content, $this->bodyIsFilePathAndFilename);
+		$copy->setBody($content, FALSE);
 		return $copy;
 	}
 

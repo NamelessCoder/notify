@@ -123,8 +123,51 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 		if (empty($sender)) {
 			throw new Exception('Unable to determine sender type (data vas ' . var_export($sender, TRUE) . ' - make sure the value is either a string, a valid $name=>$email array or an object that converts to a string using __toString(), getValue() or render() methods on the object which return an RFC valid email identity)', 1334864233);
 		}
-		$sent = $this->mail($copy->getSubject(), $copy->getBody(), $recipient, $sender);
-		return $sent;
+		$recipientParts = explode(' <', trim($recipient, '>'));
+		$senderParts = explode(' <', trim($sender, '>'));
+		list ($recipientName, $recipientEmail) = $recipientParts;
+		list ($senderName, $senderEmail) = $senderParts;
+		$mailer = $this->getMailer();
+		$mailer->setSubject($copy->getSubject());
+		$mailer->setFrom($senderEmail, $senderName);
+		$mailer->setTo($recipientEmail, $recipientName);
+
+			// parts:
+		$mailer->setBody($copy->getBody(), 'text/html');
+			// process the content body a little, plaintext emails require some trimming.
+		$lines = explode("\n", trim(strip_tags($content)));
+		$whiteLines = 0;
+		foreach ($lines as $index => $line) {
+			$line = trim($line);
+			if ($line === '') {
+				$whiteLines++;
+				if ($whiteLines > 1) {
+					unset($lines[$index]);
+					continue;
+				} else {
+					$lines[$index] = '';
+				}
+			} else {
+				$whiteLines = 0;
+			}
+			$lines[$index] = $line;
+		}
+		$mailer->addPart(implode(LF, $lines), 'text/plain');
+
+		$attachments = $copy->getAttachments();
+		foreach ($attachments as $attachment) {
+			if ($attachment instanceof Swift_Image || $attachment instanceof Swift_EmbeddedFile) {
+				$disposition = $attachment->getDisposition();
+			} else {
+				$disposition = 'attachment';
+			}
+			if ($disposition == 'inline') {
+				$mailer->embed($attachment);
+			} else {
+				$mailer->attach($attachment);
+			}
+		}
+		return $mailer->send();
 	}
 
 	/**
