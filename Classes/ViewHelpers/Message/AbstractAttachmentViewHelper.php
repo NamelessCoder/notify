@@ -1,15 +1,9 @@
 <?php
 
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/DependencyContainer.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Mime/EncodingObserver.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Mime/CharsetObserver.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Mime/HeaderSet.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Mime/MimeEntity.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Mime/SimpleMimeEntity.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Mime/Attachment.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Mime/EmbeddedFile.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/EmbeddedFile.php';
-require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift/Image.php';
+
+#require_once PATH_typo3 . 'contrib/swiftmailer/classes/Swift.php';
+require_once(PATH_typo3 . 'contrib/swiftmailer/swift_required.php');
+#Swift::registerAutoload(NULL);
 
 class Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
 
@@ -19,7 +13,10 @@ class Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper extends Tx_Flui
 	 * @param string $file
 	 * @return string
 	 */
-	public function render($file) {
+	public function render($file = NULL) {
+		if ($file === NULL) {
+			$file = $this->renderChildren();
+		}
 		$attachment = $this->createAttachmentObject($file);
 		$this->attach($attachment);
 	}
@@ -35,8 +32,6 @@ class Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper extends Tx_Flui
 			$media = $this->viewHelperVariableContainer->get('Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper', 'media');
 		}
 		$media[$id] = $attachment;
-		Tx_Extbase_Utility_Debugger::var_dump($media);
-		exit();
 		$this->viewHelperVariableContainer->addOrUpdate('Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper', 'media', $media);
 	}
 
@@ -64,6 +59,9 @@ class Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper extends Tx_Flui
 			$id = $this->arguments['id'];
 		} else {
 			$id = md5($file);
+		}
+		if (strpos($id, '@') === FALSE) {
+			$id = $id . '@ext.notify';
 		}
 		return $id;
 	}

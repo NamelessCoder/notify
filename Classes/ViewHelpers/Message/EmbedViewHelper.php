@@ -7,7 +7,10 @@ class Tx_Notify_ViewHelpers_Message_EmbedViewHelper extends Tx_Notify_ViewHelper
 	 * @param string $file
 	 * @return string
 	 */
-	public function render($file) {
+	public function render($file = NULL) {
+		if ($file === NULL) {
+			$file = $this->renderChildren();
+		}
 		$attachment = $this->createAttachmentObject($file);
 		$this->attach($attachment);
 		return 'cid:' . $attachment->getId();

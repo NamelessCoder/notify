@@ -41,6 +41,7 @@ plugin.tx_notify {
 			gateway = {$plugin.tx_notify.settings.sms.gateway}
 		}
 		email {
+            view < plugin.tx_notify.view
 			from.name = {$plugin.tx_notify.settings.email.from.name}
 			from.email = {$plugin.tx_notify.settings.email.from.email}
 			subject = {$plugin.tx_notify.settings.email.subject}
@@ -48,7 +49,6 @@ plugin.tx_notify {
             	templatePathAndFilename = {$plugin.tx_notify.settings.email.template.templatePathAndFilename}
             	section = {$plugin.tx_notify.settings.email.template.section}
             	variables = {$plugin.tx_notify.settings.email.template.variables}
-            	view < plugin.tx_notify.view
             }
 		}
 	}
@@ -56,3 +56,4 @@ plugin.tx_notify {
 
 page.includeJS.52356 = EXT:notify/Resources/Public/Javascripts/Subscribe.plugin.js
 
+plugin.tx_notify.settings.email.view.partialRootPath = EXT:colab/Resources/Private/Partials/

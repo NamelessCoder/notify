@@ -133,7 +133,8 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 		$mailer->setTo($recipientEmail, $recipientName);
 
 			// parts:
-		$mailer->setBody($copy->getBody(), 'text/html');
+		$content = $copy->getBody();
+		$mailer->setBody($content, 'text/html');
 			// process the content body a little, plaintext emails require some trimming.
 		$lines = explode("\n", trim(strip_tags($content)));
 		$whiteLines = 0;
@@ -154,20 +155,23 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 		}
 		$mailer->addPart(implode(LF, $lines), 'text/plain');
 
-		$attachments = $copy->getAttachments();
+		$attachments = $message->getAttachments();
 		foreach ($attachments as $attachment) {
 			if ($attachment instanceof Swift_Image || $attachment instanceof Swift_EmbeddedFile) {
 				$disposition = $attachment->getDisposition();
 			} else {
 				$disposition = 'attachment';
 			}
+			#Tx_Extbase_Utility_Debugger::var_dump($attachment);
 			if ($disposition == 'inline') {
 				$mailer->embed($attachment);
 			} else {
 				$mailer->attach($attachment);
 			}
 		}
-		return $mailer->send();
+		#exit();
+		$sent = $mailer->send();
+		return $sent;
 	}
 
 	/**

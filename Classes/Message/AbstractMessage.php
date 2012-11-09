@@ -207,19 +207,22 @@ class Tx_Notify_Message_AbstractMessage {
 	}
 
 	/**
-	 * @param mixed $attachmentPathAndFilename String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
+	 * @param mixed $attachment String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
 	 * @param string $description A string description of the attachment, rendered as label for the file (or if you choose, rendered any way you like in a dynamic template)
 	 */
-	public function addAttachment($attachmentPathAndFilename, $description) {
-		$this->attachments[$attachmentPathAndFilename] = $description;
+	public function addAttachment($attachment) {
+		if (in_array($attachment, $this->attachments) === FALSE) {
+			array_push($this->attachments, $attachment);
+		}
 	}
 
 	/**
-	 * @param mixed $attachmentPathAndFilename String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
+	 * @param mixed $attachment String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
 	 */
-	public function removeAttachment($attachmentPathAndFilename) {
-		if (isset($this->attachments[$attachmentPathAndFilename])) {
-			unset($this->attachments[$attachmentPathAndFilename]);
+	public function removeAttachment($attachment) {
+		if (in_array($attachment, $this->attachments) === TRUE) {
+			$index = array_search($attachment, $this->attachments);
+			unset($this->attachments[$index]);
 		}
 	}
 
@@ -277,8 +280,6 @@ class Tx_Notify_Message_AbstractMessage {
 		} else {
 			$content = $body;
 		}
-		#Tx_Extbase_Utility_Debugger::var_dump($content);
-		#exit();
 		$isFluidTemplate = strpos($content, '{namespace') !== FALSE;
 		if ($isFluidTemplate === FALSE) {
 			foreach ($this->variables as $name=>$value) {
@@ -286,7 +287,9 @@ class Tx_Notify_Message_AbstractMessage {
 			}
 		} else {
 			$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-			$paths = Tx_Fed_Utility_Path::translatePath($typoScriptSettings['plugin.']['tx_notify.']['view.']);
+			$paths = Tx_Fed_Utility_Path::translatePath($typoScriptSettings['plugin.']['tx_notify.']['settings.']['email.']['view.']);
+			Tx_Extbase_Utility_Debugger::var_dump($paths);
+
 			/** @var $template Tx_Flux_MVC_View_ExposedStandaloneView */
 			$this->variables['attachments'] = $this->attachments;
 			$this->variables['recipient'] = $this->recipient;
@@ -299,8 +302,8 @@ class Tx_Notify_Message_AbstractMessage {
 
 				// extract media added in the template
 			$media = (array) $template->getStoredVariable('Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper', 'media');
-			foreach ($media as $attachmentFilePathAndFilename) {
-				$this->addAttachment($attachmentFilePathAndFilename, 'File: ' . basename($attachmentFilePathAndFilename));
+			foreach ($media as $attachmentContentId => $attachment) {
+				$this->addAttachment($attachment, $attachmentContentId);
 			}
 
 			$content = $template->render();

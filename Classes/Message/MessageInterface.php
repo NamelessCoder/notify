@@ -64,16 +64,15 @@ interface Tx_Notify_Message_MessageInterface {
 
 	/**
 	 * @abstract
-	 * @param mixed $attachmentPathAndFilename String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
-	 * @param string $description A string description of the attachment, rendered as label for the file (or if you choose, rendered any way you like in a dynamic template)
+	 * @param mixed $attachment String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
 	 */
-	public function addAttachment($attachmentPathAndFilename, $description);
+	public function addAttachment($attachment);
 
 	/**
 	 * @abstract
-	 * @param mixed $attachmentPathAndFilename String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
+	 * @param mixed $attachment String or string-convertible object containing TYPO3-keyworded or simple path to attachment, siteroot-relative and absolute supported
 	 */
-	public function removeAttachment($attachmentPathAndFilename);
+	public function removeAttachment($attachment);
 
 	/**
 	 * @abstract

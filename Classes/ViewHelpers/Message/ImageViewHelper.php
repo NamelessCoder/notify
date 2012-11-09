@@ -7,10 +7,13 @@ class Tx_Notify_ViewHelpers_Message_ImageViewHelper extends Tx_Notify_ViewHelper
 	 * @param string $file
 	 * @return string
 	 */
-	public function render($file) {
+	public function render($file = NULL) {
+		if ($file === NULL) {
+			$file = $this->renderChildren();
+		}
 		$attachment = $this->createAttachmentObject($file);
 		$this->attach($attachment);
-		return 'cid:' . $attachment->getId();
+		return $attachment->getId();
 	}
 
 	/**
@@ -19,8 +22,10 @@ class Tx_Notify_ViewHelpers_Message_ImageViewHelper extends Tx_Notify_ViewHelper
 	 */
 	protected function createAttachmentObject($file) {
 		$file = t3lib_div::getFileAbsFileName($file);
+		$fileInfo = new finfo(FILEINFO_MIME);
+		$contentType = $fileInfo->file($file);
 		$id = $this->createId($file);
-		$attachment = Swift_Image::fromPath($file);
+		$attachment = new Swift_Image(file_get_contents($file), basename($file), $contentType);
 		$attachment->setId($id);
 		$attachment->setDisposition('inline');
 		return $attachment;
