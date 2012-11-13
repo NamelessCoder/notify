@@ -288,7 +288,7 @@ class Tx_Notify_Message_AbstractMessage {
 		} else {
 			$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 			$paths = Tx_Fed_Utility_Path::translatePath($typoScriptSettings['plugin.']['tx_notify.']['settings.']['email.']['view.']);
-			Tx_Extbase_Utility_Debugger::var_dump($paths);
+			#Tx_Extbase_Utility_Debugger::var_dump($paths);
 
 			/** @var $template Tx_Flux_MVC_View_ExposedStandaloneView */
 			$this->variables['attachments'] = $this->attachments;
