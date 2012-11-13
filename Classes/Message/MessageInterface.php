@@ -1,6 +1,9 @@
 <?php
 interface Tx_Notify_Message_MessageInterface {
 
+	const TYPE_TEXT = 0;
+	const TYPE_HTML = 1;
+
 	/**
 	 * @abstract
 	 * @param mixed $recipient Either an array of $name=>$email, a simple email address or a "Name <email@dom.tld>" string or a string-convertible object which returns any of the beforementioned address types
@@ -116,5 +119,16 @@ interface Tx_Notify_Message_MessageInterface {
 	 * @return boolean
 	 */
 	public function getPrepared();
+
+	/**
+	 * @return integer
+	 */
+	public function getType();
+
+	/**
+	 * @param integer $type
+	 * @return void
+	 */
+	public function setType($type);
 
 }
