@@ -156,7 +156,7 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 		}
 		$mailer->addPart(implode(LF, $lines), 'text/plain');
 
-		$attachments = $message->getAttachments();
+		$attachments = (array) $message->getAttachments();
 		foreach ($attachments as $attachment) {
 			if ($attachment instanceof Swift_Image || $attachment instanceof Swift_EmbeddedFile) {
 				$disposition = $attachment->getDisposition();
