@@ -55,5 +55,3 @@ plugin.tx_notify {
 }
 
 page.includeJS.52356 = EXT:notify/Resources/Public/Javascripts/Subscribe.plugin.js
-
-plugin.tx_notify.settings.email.view.partialRootPath = EXT:colab/Resources/Private/Partials/
