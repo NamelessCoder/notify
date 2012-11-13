@@ -52,6 +52,11 @@ class Tx_Notify_Message_AbstractMessage {
 	protected $prepared = FALSE;
 
 	/**
+	 * @var mixed
+	 */
+	protected $alternative;
+
+	/**
 	 * Template variable storage. RESERVED NAMES are the current values. These values are set internally when sending
 	 *
 	 * @var array
@@ -401,6 +406,41 @@ class Tx_Notify_Message_AbstractMessage {
 	 */
 	public function getPrepared() {
 		return $this->prepared;
+	}
+
+	/**
+	 * @param mixed $alternative
+	 */
+	public function setAlternative($alternative) {
+		$this->alternative = $alternative;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAlternative() {
+		if (!$this->alternative && $this->type === Tx_Notify_Message_MessageInterface::TYPE_HTML) {
+			// process the content body a little, plaintext emails require some trimming.
+			$lines = explode("\n", trim(strip_tags($this->getBody())));
+			$whiteLines = 0;
+			foreach ($lines as $index => $line) {
+				$line = trim($line);
+				if ($line === '') {
+					$whiteLines++;
+					if ($whiteLines > 1) {
+						unset($lines[$index]);
+						continue;
+					} else {
+						$lines[$index] = '';
+					}
+				} else {
+					$whiteLines = 0;
+				}
+				$lines[$index] = $line;
+			}
+			return implode(LF, $lines);
+		}
+		return $this->alternative;
 	}
 
 }

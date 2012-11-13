@@ -131,4 +131,15 @@ interface Tx_Notify_Message_MessageInterface {
 	 */
 	public function setType($type);
 
+	/**
+	 * @return mixed
+	 */
+	public function getAlternative();
+
+	/**
+	 * @param mixed $alternative
+	 * @return void
+	 */
+	public function setAlternative($alternative);
+
 }
