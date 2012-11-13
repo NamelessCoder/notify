@@ -135,29 +135,10 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 
 			// parts:
 		if ($message->getType() === Tx_Notify_Message_MessageInterface::TYPE_TEXT) {
-			$content = $copy->getBody();
+			$mailer->setBody($copy->getBody());
 		} elseif ($message->getType() === Tx_Notify_Message_MessageInterface::TYPE_HTML) {
-			$content = $copy->getBody();
-			$mailer->setBody($content, 'text/html');
-				// process the content body a little, plaintext emails require some trimming.
-			$lines = explode("\n", trim(strip_tags($content)));
-			$whiteLines = 0;
-			foreach ($lines as $index => $line) {
-				$line = trim($line);
-				if ($line === '') {
-					$whiteLines++;
-					if ($whiteLines > 1) {
-						unset($lines[$index]);
-						continue;
-					} else {
-						$lines[$index] = '';
-					}
-				} else {
-					$whiteLines = 0;
-				}
-				$lines[$index] = $line;
-			}
-			$mailer->addPart(implode(LF, $lines), 'text/plain');
+			$mailer->setBody($copy->getBody(), 'text/html');
+			$mailer->addPart($copy->getAlternative(), 'text/plain');
 		}
 
 		$attachments = (array) $message->getAttachments();
