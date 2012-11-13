@@ -100,6 +100,7 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 	 * Sends a Message-interface-implementing Message through Email routes
 	 *
 	 * @param Tx_Notify_Message_MessageInterface $message The message to send
+	 * @return boolean
 	 */
 	public function send(Tx_Notify_Message_MessageInterface $message) {
 		$settings = $this->getComponentConfiguration();
