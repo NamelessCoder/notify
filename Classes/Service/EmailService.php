@@ -133,7 +133,6 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 		$mailer->setFrom($senderEmail, $senderName);
 		$mailer->setTo($recipientEmail, $recipientName);
 
-			// parts:
 		if ($message->getType() === Tx_Notify_Message_MessageInterface::TYPE_TEXT) {
 			$mailer->setBody($copy->getBody());
 		} elseif ($message->getType() === Tx_Notify_Message_MessageInterface::TYPE_HTML) {
