@@ -409,6 +409,20 @@ class Tx_Notify_Message_AbstractMessage {
 	}
 
 	/**
+	 * @param integer $type
+	 */
+	public function setType($type) {
+		$this->type = $type;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
 	 * @param mixed $alternative
 	 */
 	public function setAlternative($alternative) {
