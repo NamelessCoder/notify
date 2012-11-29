@@ -310,9 +310,17 @@ class Tx_Notify_Message_AbstractMessage {
 			$template->setPartialRootPath($paths['partialRootPath']);
 
 				// extract media added in the template
-			$media = (array) $template->getStoredVariable('Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper', 'media');
-			foreach ($media as $attachmentContentId => $attachment) {
-				$this->addAttachment($attachment, $attachmentContentId);
+			try {
+				$media = (array) $template->getStoredVariable('Tx_Notify_ViewHelpers_Message_AbstractAttachmentViewHelper', 'media');
+				foreach ($media as $attachmentContentId => $attachment) {
+					$this->addAttachment($attachment, $attachmentContentId);
+				}
+			} catch (exception $e) {
+				// avoid error if no attachment
+				if ($e->getCode() != 1243325768) { 
+					throw $e;
+					
+				}
 			}
 
 			$content = $template->render();
