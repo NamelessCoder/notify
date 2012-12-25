@@ -42,7 +42,7 @@ $EM_CONF[$_EXTKEY] = array (
 			'flux' => '',
 			'fed' => '',
 		),
-		'conflicts' => '',
+		'conflicts' => array(),
 		'suggests' => 
 		array (
 		),
