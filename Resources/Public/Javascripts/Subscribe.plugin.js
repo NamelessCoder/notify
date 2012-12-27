@@ -49,7 +49,6 @@
 	};
     jQuery(document).ready(function($) {
         $('.tx-notify.subscribe.component').notifySubscribe();
-        $('[rel="tooltip"]').tooltip();
     });
 })(jQuery);
 
