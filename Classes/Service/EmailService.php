@@ -163,8 +163,17 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 	 */
 	protected function formatRfcAddress($address) {
 		if (is_array($address) === TRUE) {
+			if (count($address) > 1) {
+				return array_map(array($this, 'formatRfcAddress'), $address);
+			}
 			reset($address);
-			$address = current($address) . ' <' . key($address) . '>';
+			$name = trim(current($address));
+			$address = key($address);
+			if (empty($name) === FALSE) {
+				$address = $name . ' <' . $address . '>';
+			} else {
+				$address = $address . ' <' . $address . '>';
+			}
 		} elseif (is_object($address) === TRUE) {
 			if (method_exists($address, '__toString') === TRUE) {
 				$address = (string) $address;
