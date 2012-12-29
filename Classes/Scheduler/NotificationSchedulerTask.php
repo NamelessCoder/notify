@@ -93,7 +93,6 @@ class Tx_Notify_Scheduler_NotificationSchedulerTask extends Tx_Notify_Scheduler_
 				}
 			} catch (Exception $error) {
 				t3lib_div::sysLog($error->getMessage(), 'Notify', 2);
-				throw $error;
 			}
 		}
 		return TRUE;
