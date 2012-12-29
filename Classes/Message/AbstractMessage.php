@@ -176,7 +176,7 @@ class Tx_Notify_Message_AbstractMessage {
 	 * @param string $subject
 	 */
 	public function setSubject($subject) {
-		$this->subject = $subject;
+		$this->subject = trim($subject);
 	}
 
 	/**
@@ -191,7 +191,7 @@ class Tx_Notify_Message_AbstractMessage {
 	 * @param boolean $isFilePathAndFilename
 	 */
 	public function setBody($body, $isFilePathAndFilename=FALSE) {
-		$this->body = $body;
+		$this->body = trim($body);
 		$this->bodyIsFilePathAndFilename = (boolean) $isFilePathAndFilename;
 	}
 
@@ -341,6 +341,7 @@ class Tx_Notify_Message_AbstractMessage {
 
 			$content = $template->render();
 		}
+		$content = trim($content);
 
 			// NOTE: we clone this current Message to preserve the current object-type variables that have been set.
 			// The EmailService requires the variables to be proper strings and cannot perform transformations.
