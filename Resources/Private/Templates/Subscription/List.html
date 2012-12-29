@@ -18,8 +18,8 @@
 						<f:if condition="{subscription.sourceFields}"><td style="width: 30px; white-space: nowrap;"><span class="label">{subscription.sourceFields}</span></td></f:if>
 						<td style="width: 60px; white-space: nowrap;">
 							<notify:widget.subscribe subscription="{subscription}" url="{subscription.url}"
-								settings="{display: { mode: 'button', button: {class: 'btn btn-mini'}, link: {subscribed: '<span class=\"icon-off icon-white\"></span>', unsubscribed: '<span class=\"icon-off\"></span>'}}}" />
-							<f:link.action action="delete" arguments="{subscription: subscription.uid}" class="btn btn-inverse btn-mini"><span class="icon-trash icon-white"></span></f:link.action>
+								settings="{display: { mode: 'button', button: {class: 'btn'}, link: {subscribed: '<span class=\"icon-off icon-white\"></span>', unsubscribed: '<span class=\"icon-off\"></span>'}}}" />
+							<f:link.action action="delete" arguments="{subscription: subscription.uid}" class="btn btn-inverse"><span class="icon-trash icon-white"></span></f:link.action>
 						</td>
 					</tr>
 				</f:for>

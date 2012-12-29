@@ -6,26 +6,18 @@
 <f:render section="{notify:ucfirst(string: settings.display.mode)}" optional="TRUE" arguments="{_all}" />
 
 <f:section name="Button">
-	<div class="subscribe-button {f:if(condition: subscriber, else: 'input-append')}">
-		<f:render section="Subscriber" arguments="{_all}" />
-		<button type="button" class="button tx-notify subscribe component btn {settings.display.button.class} {role} {f:if(condition: isSubscribed, then: 'btn-success')}"
-				data-rel="{urlToggle}">
-			<f:if condition="{0: settings.display.image.position} == {0: 'left'}" else="{toggleLinkText}" />
-			<f:if condition="{isSubscribed}">
-				<f:then>
-					<fed:exists file="{settings.display.image.subscribed}">
-						<f:image src="{toggleImage}" alt="" class="icon-asterisk" />
-					</fed:exists>
-				</f:then>
-				<f:else>
-					<fed:exists file="{settings.display.image.unsubscribed}">
-						<f:image src="{settings.display.image.unsubscribed}" alt="{settings.display.link.unsubscribed}" class="icon-asterisk" />
-					</fed:exists>
-				</f:else>
-			</f:if>
-			<f:if condition="{0: settings.display.image.position} == {0: 'left'}" then="{toggleLinkText}" />
-		</button>
-	</div>
+	<f:if condition="{subscriber}">
+		<f:then>
+			<f:render section="Subscriber" arguments="{_all}" />
+			<f:render section="InnerButton" arguments="{_all}" />
+		</f:then>
+		<f:else>
+			<div class="subscribe-button input-append">
+				<f:render section="Subscriber" arguments="{_all}" />
+				<f:render section="InnerButton" arguments="{_all}" />
+			</div>
+		</f:else>
+	</f:if>
 </f:section>
 
 <f:section name="Image">
@@ -111,4 +103,24 @@
 		<f:then><input type="hidden" class="subcribe subscriber" value="{subscriber}" /></f:then>
 		<f:else><input type="text" class="subscribe subscriber input-small" placeholder="{notify:ucfirst(string: '{notify:modes()}')}" /></f:else>
 	</f:if>
+</f:section>
+
+<f:section name="InnerButton">
+	<button type="button" class="button tx-notify subscribe component btn {settings.display.button.class} {role} {f:if(condition: isSubscribed, then: 'btn-success')}"
+	        data-rel="{urlToggle}">
+		<f:if condition="{0: settings.display.image.position} == {0: 'left'}" else="{toggleLinkText}" />
+		<f:if condition="{isSubscribed}">
+			<f:then>
+				<fed:exists file="{settings.display.image.subscribed}">
+					<f:image src="{toggleImage}" alt="" class="icon-asterisk" />
+				</fed:exists>
+			</f:then>
+			<f:else>
+				<fed:exists file="{settings.display.image.unsubscribed}">
+					<f:image src="{settings.display.image.unsubscribed}" alt="{settings.display.link.unsubscribed}" class="icon-asterisk" />
+				</fed:exists>
+			</f:else>
+		</f:if>
+		<f:if condition="{0: settings.display.image.position} == {0: 'left'}" then="{toggleLinkText}" />
+	</button>
 </f:section>
