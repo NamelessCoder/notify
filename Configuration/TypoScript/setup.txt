@@ -28,6 +28,10 @@ plugin.tx_notify {
 			button {
 				class = {$plugin.tx_notify.settings.display.button.class}
 			}
+			splitbutton {
+				class.enabled = {$plugin.tx_notify.settings.display.splitbutton.class.enabled}
+				class.disabled = {$plugin.tx_notify.settings.display.splitbutton.class.disabled}
+			}
 			timeline {
 				disableControls = {$plugin.tx_notify.settings.display.timeline.disableControls}
 			}

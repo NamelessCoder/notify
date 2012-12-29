@@ -45,6 +45,12 @@ plugin.tx_notify {
 				# cat=plugin.tx_notify//a; label=CSS class or classes for the rendered button. This default class is a nice case for Twitter Bootstrap
 				class = subscribe btn-small
 			}
+			splitbutton {
+				# cat=plugin.tx_notify//a; label=CSS class or classes for the rendered split-button enabled side. This default class is a nice case for Twitter Bootstrap
+				class.enabled = btn-small
+				# cat=plugin.tx_notify//a; label=CSS class or classes for the rendered split-button enabled side. This default class is a nice case for Twitter Bootstrap
+				class.disabled = btn-small
+			}
 			timeline {
 				# cat=plugin.tx_notify//a; label=Disable the controls to dismiss updates from the timeline
 				disableControls = 0

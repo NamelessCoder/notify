@@ -6,7 +6,7 @@
 <f:render section="{notify:ucfirst(string: settings.display.mode)}" optional="TRUE" arguments="{_all}" />
 
 <f:section name="Button">
-	<div class="{f:if(condition: subscriber, else: 'input-append')}">
+	<div class="subscribe-button {f:if(condition: subscriber, else: 'input-append')}">
 		<f:render section="Subscriber" arguments="{_all}" />
 		<button type="button" class="button tx-notify subscribe component btn {settings.display.button.class} {role} {f:if(condition: isSubscribed, then: 'btn-success')}"
 				data-rel="{urlToggle}">
@@ -62,10 +62,10 @@
 	<fed:data.var name="urlSubscribe"><f:widget.uri action="subscribe" ajax="TRUE" arguments="{urlArguments}" /></fed:data.var>
 	<fed:data.var name="urlUnsubscribe"><f:widget.uri action="unsubscribe" ajax="TRUE" arguments="{urlArguments}" /></fed:data.var>
 	<div class="btn-group">
-		<button class="splitbutton tx-notify subscribe component btn{f:if(condition: isSubscribed, else: ' btn-danger')}"
+		<button class="splitbutton tx-notify subscribe component {settings.display.class.enabled} btn{f:if(condition: isSubscribed, else: ' btn-danger')}"
 			data-role="unsubscribe" data-rel="{urlToggle}">Off</button>
 		<f:render section="Subscriber" arguments="{_all}" />
-		<button class="splitbutton tx-notify subscribe component btn{f:if(condition: isSubscribed, then: ' btn-success')}"
+		<button class="splitbutton tx-notify subscribe component {settings.display.class.disabled} btn{f:if(condition: isSubscribed, then: ' btn-success')}"
 			data-role="subscribe" data-rel="{urlToggle}">On</button>
 	</div>
 </f:section>
