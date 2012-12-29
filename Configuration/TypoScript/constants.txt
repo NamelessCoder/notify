@@ -75,6 +75,8 @@ plugin.tx_notify {
 			from.email = www@localhost.tld
 			# cat=plugin.tx_notify//a; label=Emails are sent with this subject (if not overridden by internal or subclassed logic)
 			subject = Subscription notification
+			# cat=plugin.tx_notify//a; label=Class of MessageInterface implementation to use when creating Email Message objects
+			class = Tx_Notify_Message_FluidEmail
 			template {
 				# cat=plugin.tx_notify//a; label=Partial template beneath plugin.tx_notify.view.partialRootPath containing the email template
 				templatePathAndFilename = EXT:notify/Resources/Private/Partials/Email/Default.html

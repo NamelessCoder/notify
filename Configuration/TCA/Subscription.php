@@ -6,10 +6,10 @@ if (!defined ('TYPO3_MODE')) {
 $TCA['tx_notify_domain_model_subscription'] = array(
 	'ctrl' => $TCA['tx_notify_domain_model_subscription']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, active, mode, subscriber, source, source_table, source_uid, source_fields, checksum, last_notification_date, url',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, active, mode, subscriber, source, source_file, source_table, source_uid, source_fields, checksum, last_notification_date, url',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, active, subscriber, mode, source, source_table, source_uid, source_fields, checksum, last_notification_date, url,--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, active, subscriber, mode, source, source_file, source_table, source_uid, source_fields, checksum, last_notification_date, url,--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -110,7 +110,13 @@ $TCA['tx_notify_domain_model_subscription'] = array(
 		),
 		'source' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:notify/Resources/Private/Language/locallang_db.xml:tx_notify_domain_model_subscription.source',
+			'config' => array(
+				'type' => 'passthrough'
+			)
+		),
+		'source_file' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:notify/Resources/Private/Language/locallang_db.xml:tx_notify_domain_model_subscription.source_file',
 			'displayCond' => 'FIELD:mode:=:2',
 			'config' => array(
 				'type' => 'input',

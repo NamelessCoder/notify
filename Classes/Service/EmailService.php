@@ -154,7 +154,7 @@ class Tx_Notify_Service_EmailService implements t3lib_Singleton, Tx_Notify_Messa
 			}
 		}
 		$sent = $mailer->send();
-		return $sent;
+		return (boolean) ($sent > 0);
 	}
 
 	/**

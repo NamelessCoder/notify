@@ -264,12 +264,14 @@ class Tx_Notify_Message_AbstractMessage {
 	 */
 	public function send() {
 		$copy = $this->prepare();
+		$sent = FALSE;
 		try {
-			return $this->emailService->send($copy);
+			$sent = $this->emailService->send($copy);
 		} catch (Exception $e) {
-			$newException = new Exception('Errors while sending Message - see previous exception attached to this Exception. Message was: ' . $e->getMessage(), 1334867135);
+			$newException = new Exception('Errors while sending Message - see previous exception attached to this Exception. Message was: ' . $e->getMessage(), 1334867135, $e);
 			throw $newException;
 		}
+		return $sent;
 	}
 
 	/**

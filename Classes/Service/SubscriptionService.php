@@ -66,6 +66,30 @@ class Tx_Notify_Service_SubscriptionService extends Tx_Notify_Service_AbstractSe
 	}
 
 	/**
+	 * @return Tx_Notify_Subscription_SourceProviderInterface[]
+	 */
+	public function getUniqueSourceProvidersUsedByAllSubscriptions() {
+		$subscriptions = $this->getAllActiveSubscriptions();
+		/** @var $providers Tx_Notify_Subscription_SourceProviderInterface[] */
+		$providers = array();
+		$names = array();
+		foreach ($subscriptions as $subscription) {
+			$provider = $subscription->getSource();
+			if (is_object($provider)) {
+				$provider = serialize($provider);
+			}
+			array_push($names, $provider);
+		}
+		$names = array_unique($names);
+		foreach ($names as $provider) {
+			if (substr($provider, 0, 2) === 'O:') {
+				array_push($providers, unserialize($provider));
+			}
+		}
+		return $providers;
+	}
+
+	/**
 	 * @param array $configuration
 	 * @return Tx_Notify_Subscription_SourceProviderInterface
 	 */
@@ -93,12 +117,15 @@ class Tx_Notify_Service_SubscriptionService extends Tx_Notify_Service_AbstractSe
 		$this->refreshSubscriberCookie($subscriber);
 		if ($subscription = $source->getSubscription($subscriber)) {
 			$subscription->setActive(TRUE);
+			$subscription->setUrl($url);
+			$subscription->setSource($source);
 			$this->subscriptionRepository->update($subscription);
 		} else {
 			$subscription = $source->createSubscription($subscriber);
+			$subscription->setUrl($url);
+			$subscription->setSource($source);
 			$this->subscriptionRepository->add($subscription);
 		}
-		$subscription->setUrl($url);
 		$this->persistenceManager->persistAll();
 		return $subscription;
 	}
@@ -118,9 +145,8 @@ class Tx_Notify_Service_SubscriptionService extends Tx_Notify_Service_AbstractSe
 			$this->subscriptionRepository->update($subscription);
 			$this->persistenceManager->persistAll();
 			return TRUE;
-		} else {
-			return FALSE;
 		}
+		return FALSE;
 	}
 
 	/**
@@ -133,9 +159,8 @@ class Tx_Notify_Service_SubscriptionService extends Tx_Notify_Service_AbstractSe
 		$subscription = $source->getSubscription($subscriber);
 		if ($subscription) {
 			return $subscription->getActive();
-		} else {
-			return FALSE;
 		}
+		return FALSE;
 	}
 
 	/**

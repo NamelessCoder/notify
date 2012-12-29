@@ -42,24 +42,59 @@ class Tx_Notify_Service_NotificationService extends Tx_Notify_Service_AbstractSe
 	}
 
 	/**
+	 * @param $subscriber
+	 * @param Traversable $subscriptions
+	 * @return boolean
+	 */
+	public function sendSubscribedNotificationsToSubscriber($subscriber, Traversable $subscriptions) {
+		$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+		$typoScriptSettings = $typoScriptSettings['plugin.']['tx_notify.']['settings.'];
+		$messageType = isset($typoScriptSettings['email.']['class']) ? $typoScriptSettings['email.']['class'] : 'Tx_Notify_Message_FluidEmail';
+		try {
+			/** @var $message Tx_Notify_Message_FluidEmail */
+			$message = $this->objectManager->create($messageType);
+			$message->setRecipient($subscriber);
+			$message->setBody($typoScriptSettings['email.']['template.']['templatePathAndFilename'], TRUE);
+			$message->assign('subscriptions', $subscriptions);
+			$message->assign('subscriber', $subscriber);
+			return $message->send();
+		} catch (Exception $error) {
+			t3lib_div::sysLog($error->getMessage(), 'notify', t3lib_div::SYSLOG_SEVERITY_ERROR);
+			return FALSE;
+		}
+	}
+
+	/**
 	 * Send all notifications to stored subscriptions as triggered by $sourceProvider
 	 *
 	 * @param Tx_Notify_Subscription_SourceProviderInterface $sourceProvider
 	 * @return boolean
 	 */
 	public function sendNotifications(Tx_Notify_Subscription_SourceProviderInterface $sourceProvider) {
-		$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'notify', 'Subscriptions');
+		$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+		$typoScriptSettings = $typoScriptSettings['plugin.']['tx_notify.']['settings.'];
 		$subscriptions = $sourceProvider->getSubscriptions();
 		$triggeredSubscriptions = $this->subscriptionService->buildUpdatedContentObjects($subscriptions, TRUE);
+		$total = $triggeredSubscriptions->count();
+		$sent = 0;
+		$messageType = isset($typoScriptSettings['email.']['class']) ? $typoScriptSettings['email.']['class'] : 'Tx_Notify_Message_FluidEmail';
 		foreach ($triggeredSubscriptions as $subscription) {
-			$messageType = 'Tx_Notify_Message_FluidEmail';
-			/** @var $subscription Tx_Notify_Domain_Model_Subscription */
-			$subscriber = $subscription->getSubscriber();
-			/** @var $message Tx_Notify_Message_FluidEmail */
-			$message = $this->objectManager->create($messageType);
-			$message->setRecipient($subscriber);
-			$message->setBody($typoScriptSettings['email.']['template.']['templatePathAndFilename'], TRUE);
+			try {
+				/** @var $subscription Tx_Notify_Domain_Model_Subscription */
+				$subscriber = $subscription->getSubscriber();
+				/** @var $message Tx_Notify_Message_FluidEmail */
+				$message = $this->objectManager->create($messageType);
+				$message->setRecipient($subscriber);
+				$message->assign('subscriptions', array($subscription));
+				$message->assign('subscriber', $subscriber);
+				$message->setBody($typoScriptSettings['email.']['template.']['templatePathAndFilename'], TRUE);
+				$message->send();
+				$sent++;
+			} catch (Exception $error) {
+				t3lib_div::sysLog($error->getMessage(), 'Notify', t3lib_div::SYSLOG_SEVERITY_ERROR);
+			}
 		}
+		return $sent === $total;
 	}
 
 }

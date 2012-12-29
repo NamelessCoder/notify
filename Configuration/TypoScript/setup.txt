@@ -49,6 +49,7 @@ plugin.tx_notify {
 			from.name = {$plugin.tx_notify.settings.email.from.name}
 			from.email = {$plugin.tx_notify.settings.email.from.email}
 			subject = {$plugin.tx_notify.settings.email.subject}
+			class = {$plugin.tx_notify.settings.email.class}
 			template {
             	templatePathAndFilename = {$plugin.tx_notify.settings.email.template.templatePathAndFilename}
             	section = {$plugin.tx_notify.settings.email.template.section}

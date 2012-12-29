@@ -152,16 +152,18 @@ class Tx_Notify_Subscription_StandardSourceProvider implements Tx_Notify_Subscri
 	 * @return Tx_Extbase_Persistence_QueryResultInterface
 	 */
 	public function getSubscriptions($includeInactive=FALSE) {
+		// Please note: casting and suppression below is done to support NOT NULL
+		// fields in the DB.
 		$query = $this->subscriptionRepository->createQuery();
 		$constraints = array(
 			$query->equals('mode', $this->configuration['source']['mode']),
-			$query->equals('source', $this->configuration['source']['source']),
-			$query->equals('source_table', $this->configuration['source']['source_table']),
-			$query->equals('source_fields', $this->configuration['source']['source_fields']),
-			$query->equals('source_uid', $this->configuration['source']['source_uid']),
+			$query->equals('sourceFile', (string) @$this->configuration['source']['file']),
+			$query->equals('sourceTable', (string) @$this->configuration['source']['table']),
+			$query->equals('sourceFields', (string) @$this->configuration['source']['fields']),
+			$query->equals('sourceUid', (integer) @$this->configuration['source']['uid']),
 		);
 		if ($includeInactive === FALSE) {
-			array_push($constraints, $query->equals('active', TRUE));
+			array_push($constraints, $query->equals('active', 1));
 		}
 		return $query->matching($query->logicalAnd($constraints))->execute();
 	}
@@ -176,6 +178,13 @@ class Tx_Notify_Subscription_StandardSourceProvider implements Tx_Notify_Subscri
 	 */
 	public function setConfiguration(array $configuration) {
 		$this->configuration = $configuration;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getConfiguration() {
+		return $this->configuration;
 	}
 
 	/**
@@ -223,7 +232,7 @@ class Tx_Notify_Subscription_StandardSourceProvider implements Tx_Notify_Subscri
 		);
 		switch ($this->configuration['source']['mode']) {
 			case self::MODE_FILE:
-				array_push($constraints, $query->equals('source', $this->configuration['source']['resource']));
+				array_push($constraints, $query->equals('source_file', $this->configuration['source']['resource']));
 				break;
 			case self::MODE_RECORD:
 				array_push($constraints, $query->equals('source_table', (string) $this->configuration['source']['table']));
@@ -258,10 +267,37 @@ class Tx_Notify_Subscription_StandardSourceProvider implements Tx_Notify_Subscri
 		$message->assign('section', $this->configuration['email']['template']['section']);
 		$message->assign('subscriber', $subscriber);
 		$message->assign('settings', $this->configuration);
+		$message->assign('provider', $this);
 		$message->assign('lllPrefix', 'LLL:EXT:notify/Resources/Private/Language/locallang.xml:tx_notify_domain_model_subscription');
 		foreach ((array) $this->configuration['email']['template']['variables'] as $name => $value) {
 			$message->assign($name, $value);
 		}
 		return $message;
 	}
+
+	/**
+	 * Returns output of serialize($this)
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		return serialize($this);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function __sleep() {
+		return array('configuration');
+	}
+
+	/**
+	 * @return void
+	 */
+	function __wakeup() {
+		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$this->configurationService = $this->objectManager->get('Tx_Notify_Service_ConfigurationService');
+		$this->subscriptionRepository = $this->objectManager->get('Tx_Notify_Domain_Repository_SubscriptionRepository');
+	}
+
 }

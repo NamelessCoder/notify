@@ -11,7 +11,8 @@
 			<label index="tx_notify_domain_model_subscription.mode.0">Page</label>
 			<label index="tx_notify_domain_model_subscription.mode.1">Record</label>
 			<label index="tx_notify_domain_model_subscription.mode.2">Resource</label>
-			<label index="tx_notify_domain_model_subscription.source">Source File/resource</label>
+			<label index="tx_notify_domain_model_subscription.source">Source resource</label>
+			<label index="tx_notify_domain_model_subscription.source_file">Source File</label>
 			<label index="tx_notify_domain_model_subscription.source_table">Source Table</label>
 			<label index="tx_notify_domain_model_subscription.source_fields">Source Table Fields</label>
 			<label index="tx_notify_domain_model_subscription.source_uid">Source record</label>

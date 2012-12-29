@@ -7,7 +7,8 @@ CREATE TABLE tx_notify_domain_model_subscription (
 
 
 	mode int(11) DEFAULT '0' NOT NULL,
-	source varchar(255) DEFAULT '' NOT NULL,
+	source text NOT NULL,
+	source_file text NOT NULL,
 	source_table varchar(255) DEFAULT '' NOT NULL,
 	source_fields varchar(255) DEFAULT '' NOT NULL,
 	source_uid int(11) DEFAULT '0' NOT NULL,

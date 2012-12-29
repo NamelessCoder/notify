@@ -27,7 +27,7 @@
  * @package Notify
  * @subpackage ViewHelpers/Widget/Controller
  */
-class Tx_Notify_ViewHelpers_Widget_Controller_SubscribeController extends Tx_Fluid_Core_Widget_AbstractWidgetController {
+class Tx_Notify_ViewHelpers_Widget_Controller_SubscribeController extends Tx_Fluidwidget_Core_Widget_AbstractWidgetController {
 
 	/**
 	 * @var Tx_Notify_Service_SubscriptionService
@@ -73,7 +73,7 @@ class Tx_Notify_ViewHelpers_Widget_Controller_SubscribeController extends Tx_Flu
 			$this->widgetConfiguration['settings']['source']['resource'] = $this->widgetConfiguration['subscription']->getSource();
 		} elseif (isset($this->widgetConfiguration['mode'])) {
 			$this->widgetConfiguration['settings']['source']['mode'] = $this->widgetConfiguration['mode'];
-			switch ($this->widgetConfiguration['mode']) {
+			switch ((string) $this->widgetConfiguration['mode']) {
 				case Tx_Notify_Subscription_StandardSourceProvider::MODE_FILE:
 					$this->widgetConfiguration['settings']['source']['resource'] = $this->widgetConfiguration['resource'];
 					break;

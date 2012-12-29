@@ -3,7 +3,7 @@
  *  Copyright notice
  *
  *  (c) 2012 Claus Due <claus@wildside.dk>, Wildside A/S
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -123,14 +123,17 @@ class Tx_Notify_Domain_Model_Subscription extends Tx_Extbase_DomainObject_Abstra
 	}
 
 	/**
-	 * @return string $source
+	 * @return Tx_Notify_Subscription_SourceProviderInterface $source
 	 */
 	public function getSource() {
+		if (is_string($this->source) && substr($this->source, 0, 2) === 'O:') {
+			return unserialize($this->source);
+		}
 		return $this->source;
 	}
 
 	/**
-	 * @param string $source
+	 * @param Tx_Notify_Subscription_SourceProviderInterface $source
 	 * @return void
 	 */
 	public function setSource($source) {

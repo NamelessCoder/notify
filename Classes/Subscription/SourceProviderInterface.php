@@ -86,6 +86,11 @@ interface Tx_Notify_Subscription_SourceProviderInterface {
 	public function setConfiguration(array $configuration);
 
 	/**
+	 * @return array
+	 */
+	public function getConfiguration();
+
+	/**
 	 * Creates a new Subscription for $subscriber
 	 *
 	 * @abstract
@@ -112,5 +117,12 @@ interface Tx_Notify_Subscription_SourceProviderInterface {
 	 * @return Tx_Notify_Message_MessageInterface
 	 */
 	public function getMessageInstance($subscriber);
+
+	/**
+	 * Returns output of serialize($this)
+	 *
+	 * @return string
+	 */
+	public function __toString();
 
 }

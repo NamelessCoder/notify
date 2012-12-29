@@ -32,18 +32,19 @@ $EM_CONF[$_EXTKEY] = array (
 	'author_company' => 'Wildside A/S',
 	'CGLcompliance' => NULL,
 	'CGLcompliance_note' => NULL,
-	'constraints' => 
+	'constraints' =>
 	array (
-		'depends' => 
+		'depends' =>
 		array (
 			'cms' => '',
 			'extbase' => '',
 			'fluid' => '',
 			'flux' => '',
+			'fluidwidget' => '',
 			'fed' => '',
 		),
 		'conflicts' => array(),
-		'suggests' => 
+		'suggests' =>
 		array (
 		),
 	),

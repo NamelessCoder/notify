@@ -27,7 +27,7 @@
  * @package Notify
  * @subpackage ViewHelpers/Widget
  */
-class Tx_Notify_ViewHelpers_Widget_SubscribeViewHelper extends Tx_Fluid_Core_Widget_AbstractWidgetViewHelper {
+class Tx_Notify_ViewHelpers_Widget_SubscribeViewHelper extends Tx_Fluidwidget_Core_Widget_AbstractWidgetViewHelper {
 
 	/**
 	 * @var bool
