@@ -126,12 +126,21 @@ class Tx_Notify_Subscription_StandardSourceProvider implements Tx_Notify_Subscri
 	 * @return string
 	 */
 	public function getSubscriber() {
-		if ($GLOBALS['TSFE']->fe_user) {
+		if (isset($GLOBALS['TSFE']->fe_user->user['email'])) {
 			return $GLOBALS['TSFE']->fe_user->user['email'];
 		} elseif (isset($_SESSION['tx_notify_subscriber'])) {
 			return $_SESSION['tx_notify_subscriber'];
 		} elseif (isset($_COOKIE['tx_notify_subscriber'])) {
 			return $_COOKIE['tx_notify_subscriber'];
+		} elseif (isset($_COOKIE['dialog_poster_identifier'])) {
+			if (class_exists('Tx_Dialog_Domain_Repository_PosterRepository')) {
+				$identifier = $_COOKIE['dialog_poster_identifier'];
+				$repository = $this->objectManager->get('Tx_Dialog_Domain_Repository_PosterRepository');
+				$poster = $repository->findOneByIdentifier($identifier);
+				if ($poster) {
+					return $poster->getEmail();
+				}
+			}
 		}
 		return NULL;
 	}
