@@ -299,8 +299,8 @@ class Tx_Notify_Message_AbstractMessage {
 			}
 		} else {
 			$typoScriptSettings = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-			$paths = Tx_Fed_Utility_Path::translatePath($typoScriptSettings['plugin.']['tx_notify.']['settings.']['email.']['view.']);
 			$settings = Tx_Flux_Utility_Array::convertTypoScriptArrayToPlainArray($typoScriptSettings['plugin.']['tx_notify.']['settings.']);
+			$paths = Tx_Flux_Utility_Path::translatePath($settings['email']['view']);
 			$className = get_class($this);
 			if (strpos($className, '\\') !== FALSE) {
 				$classNameSegments = explode('\\', $className);
