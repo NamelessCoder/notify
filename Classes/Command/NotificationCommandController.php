@@ -128,7 +128,6 @@ class Tx_Notify_Command_NotificationCommandController extends Tx_Extbase_MVC_Con
 			}
 			$this->write('     ' . count($subscriptionsWithUpdates) . ' Subscriptions with updates - sending notification to subscriber', TRUE, TRUE);
 			$sent = $this->notificationService->sendSubscribedNotificationsToSubscriber($subscriber, $subscriptionsWithUpdates);
-			$this->write(var_export($sent, TRUE));
 			if ($sent === TRUE) {
 				$this->write('     *** Sent', TRUE, TRUE);
 			} else {
