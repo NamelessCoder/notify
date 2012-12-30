@@ -57,6 +57,7 @@ class Tx_Notify_Service_NotificationService extends Tx_Notify_Service_AbstractSe
 			$message->setBody($typoScriptSettings['email.']['template.']['templatePathAndFilename'], TRUE);
 			$message->assign('subscriptions', $subscriptions);
 			$message->assign('subscriber', $subscriber);
+			$message->setType(Tx_Notify_Message_MessageInterface::TYPE_HTML);
 			return $message->send();
 		} catch (Exception $error) {
 			t3lib_div::sysLog($error->getMessage(), 'notify', t3lib_div::SYSLOG_SEVERITY_ERROR);
@@ -88,6 +89,7 @@ class Tx_Notify_Service_NotificationService extends Tx_Notify_Service_AbstractSe
 				$message->assign('subscriptions', array($subscription));
 				$message->assign('subscriber', $subscriber);
 				$message->setBody($typoScriptSettings['email.']['template.']['templatePathAndFilename'], TRUE);
+				$message->setType(Tx_Notify_Message_MessageInterface::TYPE_HTML);
 				$message->send();
 				$sent++;
 			} catch (Exception $error) {
