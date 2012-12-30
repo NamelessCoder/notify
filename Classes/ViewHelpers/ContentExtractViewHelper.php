@@ -31,24 +31,12 @@ class Tx_Notify_ViewHelpers_ContentExtractViewHelper extends Tx_Fluid_Core_ViewH
 
 	/**
 	 * @param Tx_Notify_Domain_Model_Subscription $subscription
+	 * @param Tx_Notify_Domain_Model_UpdatedObject $object
 	 * @param array $record
 	 * @return string
 	 */
-	public function render(Tx_Notify_Domain_Model_Subscription $subscription, $record) {
-		$table = $subscription->getSourceTable();
-		$config = $GLOBALS['TCA'][$table]['ctrl'];
-		$label = $config['label'];
-		$labelAlt = $config['label_alt'];
-		$append = '';
-		if (empty($record[$label]) === FALSE) {
-			$labelField = $label;
-			$append = ' ' . $record[$labelAlt];
-		} elseif (empty($record[$labelAlt]) === FALSE) {
-			$labelField = $labelAlt;
-		} else {
-			return $table . ($subscription->getSourceUid() > 0 ? ':' . $subscription->getSourceUid() : '');
-		}
-		return $record[$labelField] . $append;
+	public function render(Tx_Notify_Domain_Model_Subscription $subscription, Tx_Notify_Domain_Model_UpdatedObject $object) {
+		return $object->getContent();
 	}
 
 }
