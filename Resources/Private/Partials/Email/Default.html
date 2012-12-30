@@ -1,27 +1,60 @@
-{namespace notify=Tx_Notify_ViewHelpers}{namespace fed=Tx_Fed_ViewHelpers}
-Dear {subscriber},
-
-This is a notification about changes in content to which you subscribe.
-The following content has changed:
-
-----------------------------------------------------------------------
-
+{namespace notify=Tx_Notify_ViewHelpers}
+{namespace v=Tx_Vhs_ViewHelpers}
+<h3>
+	Dear {subscriber},
+</h3>
+<p>
+	This is a notification about activity in content to which you subscribe.
+</p>
+<h4>
+	The following content has been added or changed:
+</h4>
+<hr />
 <f:render section="Timeline" arguments="{_all}" />
+<p>
+	Kind regards,
+</p>
+<p>
+	{settings.email.from.name}<br />
+	{settings.email.from.email}
+</p>
 
-----------------------------------------------------------------------
-
-Kind regards,
-
-{settings.email.from.name}
-{settings.email.from.email}
+<style type="text/css">
+	.muted {
+		color:  #999;
+	}
+	small {
+		font-size: 70%;
+	}
+	.pull-right {
+		float: right;
+	}
+</style>
 
 <f:section name="Timeline">
 	<f:if condition="{subscriptions}">
 		<f:then>
-			<f:for each="{subscriptions}" as="subscription">
-				<f:render section="Header" arguments="{_all}" />
-				<fed:data.var name="mostRecentUpdate" value="{fed:data.func(func: 'current', instance: subscription.updates)}" />
-				<f:render section="ItemType{subscription.mode}" arguments="{_all}" />
+			<f:for each="{subscriptions}" as="subscription" iteration="iteration">
+				<f:for each="{subscription.updates -> v:iterator.sort(sortBy: 'date', order: 'DESC')}" as="updatedObject">
+					<h2>
+						<small class="pull-right muted">
+							<f:format.date format="{settings.email.dateFormat}">{updatedObject.date}</f:format.date>
+						</small>
+						<span class="muted">
+							<f:translate key="{updatedObject.subType}" default="{updatedObject.subType}" />:
+						</span>
+						{notify:contentIdentity(subscription: subscription, object: updatedObject) -> notify:ucfirst()}
+					</h2>
+					<f:render section="ItemType{subscription.mode}" arguments="{_all}" />
+				</f:for>
+				<f:if condition="{subscription.url}">
+					<p>
+						<a href="{subscription.url}" title="{subscription.url}">{subscription.url -> f:format.crop(maxCharacters: 90, respectHtml: FALSE)}</a>
+					</p>
+				</f:if>
+				<f:if condition="{iteration.isLast} < 1">
+					<hr />
+				</f:if>
 			</f:for>
 		</f:then>
 		<f:else>
@@ -30,34 +63,29 @@ Kind regards,
 	</f:if>
 </f:section>
 
-<f:section name="Header">
-Type: <f:translate key="{lllPrefix}.mode.{subscription.mode}" />
-<f:if condition="{mostRecentUpdate.data.tstamp}"><f:format.date format="j/n">@{mostRecentUpdate.data.tstamp}</f:format.date> </f:if><notify:ucfirst><f:if
-	condition="{mostRecentUpdate.data.title}" then="{mostRecentUpdate.data.title}"
-  	else="{notify:contentIdentity(subscription: subscription)}" /></notify:ucfirst>
+<f:section name="ContentElement">
+	<v:var.set name="contentType" value="{notify:contentType(record: object)}" />
+	<h4><f:translate key="EXT:notify/Resources/Private/Language/locallang.xml:tx_notify_domain_model_subscription.mode.{contentType}" default="{contentType}" /></h4>
 </f:section>
 
-<f:section name="ContentElement"><fed:data.var name="contentType"><notify:contentType record="{object}" /></fed:data.var><f:translate key="{lllPrefix}.mode.{contentType}" default="{contentType}" />
-Link: {subscription.url}</f:section>
+<f:section name="ItemType0">
+	<f:if condition="{updatedObject.data.header}" then="{updatedObject.data.header}">
+		<f:else>
+			<f:render section="ContentElement" arguments="{object: updatedObject.data, subscription: subscription}" />
+		</f:else>
+	</f:if>
+</f:section>
 
-<fed:comment comment="Type: Page" />
-<f:section name="ItemType0">Updated content elements:
-<f:for each="{subscription.updates}" as="updatedObject" iteration="iteration"><f:if condition="{updatedObject.data.header}" then="{updatedObject.data.header}"><f:else>
-<f:render section="ContentElement" arguments="{object: updatedObject.data, subscription: subscription}" /></f:else></f:if></f:for>
-Link: {subscription.url}</f:section>
-
-<fed:comment comment="Type: Record" />
 <f:section name="ItemType1">
-	<fed:switch value="{subscription.sourceTable}">
-		<fed:case case="tt_content" break="TRUE">
-			<f:render section="ContentElement" arguments="{object: mostRecentUpdate.data, subscription: subscription}" />
-		</fed:case>
-		<fed:case case="default" break="TRUE">
-			<notify:ucfirst><notify:contentExtract subscription="{subscription}" record="{mostRecentUpdate.data}" /></notify:ucfirst>
-		</fed:case>
-	</fed:switch>
+	<v:switch value="{subscription.sourceTable}">
+		<v:case case="tt_content" break="TRUE">
+			<f:render section="ContentElement" arguments="{object: updatedObject, subscription: subscription}" />
+		</v:case>
+		<v:case case="default" break="TRUE">
+			<notify:contentExtract subscription="{subscription}" object="{updatedObject}" />
+		</v:case>
+	</v:switch>
 </f:section>
 
-<fed:comment comment="Type: File/Resource" />
 <f:section name="ItemType2">
 </f:section>
