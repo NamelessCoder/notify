@@ -317,6 +317,7 @@ class Tx_Notify_Message_AbstractMessage {
 			/** @var $template Tx_Flux_MVC_View_ExposedStandaloneView */
 			$this->variables['attachments'] = $this->attachments;
 			$this->variables['recipient'] = $this->recipient;
+			$this->variables['settings'] = $settings;
 			$template = $this->objectManager->create('Tx_Flux_MVC_View_ExposedStandaloneView');
 			$template->setControllerContext($controllerContext);
 			$template->setFormat('eml');
