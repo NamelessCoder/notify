@@ -15,7 +15,7 @@ class Tx_Notify_Poller_RecordPoller extends Tx_Notify_Poller_AbstractPoller impl
 			$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', $table, "uid = '" . $uid . "'");
 			$currentChecksum = $this->calculateChecksum($subscription, $row);
 			if ($currentChecksum !== $lastChecksum) {
-				$updatedObject = $this->getUpdatedObjectFromRecord($row);
+				$updatedObject = $this->getUpdatedObjectFromRecord($row, $table);
 				$objectStorage->attach($updatedObject);
 			}
 		} else {
@@ -23,7 +23,7 @@ class Tx_Notify_Poller_RecordPoller extends Tx_Notify_Poller_AbstractPoller impl
 			$currentChecksum = md5(implode('', array_keys($records)));
 			if (count($records) > 0 && $currentChecksum !== $lastChecksum) {
 				foreach ($records as $record) {
-					$updatedObject = $this->getUpdatedObjectFromRecord($record);
+					$updatedObject = $this->getUpdatedObjectFromRecord($record, $table);
 					$objectStorage->attach($updatedObject);
 				}
 			}

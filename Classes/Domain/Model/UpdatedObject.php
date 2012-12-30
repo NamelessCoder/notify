@@ -3,7 +3,7 @@
  *  Copyright notice
  *
  *  (c) 2012 Claus Due <claus@wildside.dk>, Wildside A/S
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -37,12 +37,22 @@ class Tx_Notify_Domain_Model_UpdatedObject extends Tx_Extbase_DomainObject_Abstr
 	/**
 	 * @var string
 	 */
+	protected $subType;
+
+	/**
+	 * @var string
+	 */
 	protected $action;
 
 	/**
 	 * @var string
 	 */
 	protected $title;
+
+	/**
+	 * @var string
+	 */
+	protected $content;
 
 	/**
 	 * @var string
@@ -74,6 +84,20 @@ class Tx_Notify_Domain_Model_UpdatedObject extends Tx_Extbase_DomainObject_Abstr
 	}
 
 	/**
+	 * @param string $subType
+	 */
+	public function setSubType($subType) {
+		$this->subType = $subType;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSubType() {
+		return $this->subType;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getAction() {
@@ -99,6 +123,20 @@ class Tx_Notify_Domain_Model_UpdatedObject extends Tx_Extbase_DomainObject_Abstr
 	 */
 	public function setTitle($title) {
 		$this->title = $title;
+	}
+
+	/**
+	 * @param string $content
+	 */
+	public function setContent($content) {
+		$this->content = $content;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContent() {
+		return $this->content;
 	}
 
 	/**
