@@ -39,10 +39,10 @@ class Tx_Notify_ViewHelpers_ContentIdentityViewHelper extends Tx_Fluid_Core_View
 		switch ($subscription->getMode()) {
 			case Tx_Notify_Subscription_StandardSourceProvider::MODE_PAGE: return $this->renderPageIdentity($subscription, $rootLineEntryLevel);
 			case Tx_Notify_Subscription_StandardSourceProvider::MODE_RECORD:
-				if (!$object) {
-					throw new Exception('Object is required when using notify:contentIdentity in record mode', 1356846679);
+				if ($object) {
+					return $object->getTitle();
 				}
-				return $object->getTitle();
+				return $this->renderRecordIdentity($subscription);
 			case Tx_Notify_Subscription_StandardSourceProvider::MODE_FILE: return $this->renderResourceIdentity($subscription);
 			default: break;
 		}
@@ -70,6 +70,28 @@ class Tx_Notify_ViewHelpers_ContentIdentityViewHelper extends Tx_Fluid_Core_View
 	 */
 	protected function renderResourceIdentity(Tx_Notify_Domain_Model_Subscription $subscription) {
 		return $subscription->getSource();
+	}
+
+	/**
+	 * @param Tx_Notify_Domain_Model_Subscription $subscription
+	 * @return string
+	 */
+	protected function renderRecordIdentity(Tx_Notify_Domain_Model_Subscription $subscription) {
+		$table = $subscription->getSourceTable();
+		$uid = $subscription->getUid();
+		$label = $GLOBALS['TCA'][$table]['ctrl']['label'];
+		$recordTypeTitle = $GLOBALS['TCA'][$table]['ctrl']['title'];
+		$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows($label, $table, "uid = '" . $uid . "'");
+		if ($records) {
+			$record = array_pop($records);
+		} else {
+			$record = array();
+		}
+		$title = isset($record[$label]) ? $record[$label] : NULL;
+		if (empty($title) === TRUE) {
+			$title = '&lt;No title&gt; <small>' . Tx_Extbase_Utility_Localization::translate($recordTypeTitle) . '</small>';
+		}
+		return $title;
 	}
 
 }
