@@ -78,7 +78,7 @@
 			<f:render section="ContentElement" arguments="{object: mostRecentUpdate.data}" />
 		</fed:case>
 		<fed:case case="default" break="TRUE">
-			<em><notify:ucfirst><notify:contentExtract subscription="{subscription}" record="{mostRecentUpdate.data}" /></notify:ucfirst></em>
+			<em><notify:ucfirst><notify:contentExtract subscription="{subscription}" object="{mostRecentUpdate}" /></notify:ucfirst></em>
 		</fed:case>
 	</fed:switch>
 </f:section>
