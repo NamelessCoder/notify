@@ -15,9 +15,7 @@
 				</tr>
 				<f:for each="{subscriptionsInMode}" as="subscription">
 					<tr>
-						<f:if condition="{subscription.updates -> f:count()} > 0">
-							<td colspan="{f:if(condition: subscription.sourceFields, else: 2)}"><notify:contentIdentity subscription="{subscription}" object="{subscription.updates -> v:call(method: 'current')}" /></td>
-						</f:if>
+						<td colspan="{f:if(condition: subscription.sourceFields, else: 2)}"><notify:contentIdentity subscription="{subscription}" /></td>
 						<f:if condition="{subscription.sourceFields}"><td style="width: 30px; white-space: nowrap;"><span class="label">{subscription.sourceFields}</span></td></f:if>
 						<td style="width: 60px; white-space: nowrap;">
 							<notify:widget.subscribe subscription="{subscription}" url="{subscription.url}"
