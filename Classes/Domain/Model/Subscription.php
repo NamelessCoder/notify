@@ -104,7 +104,7 @@ class Tx_Notify_Domain_Model_Subscription extends Tx_Extbase_DomainObject_Abstra
 	 * @return void
 	 */
 	public function __construct() {
-		$this->updates = t3lib_div::makeInstance('Tx_Extbase_Persistence_ObjectStorage');
+		$this->updates = new Tx_Extbase_Persistence_ObjectStorage();
 	}
 
 	/**
@@ -253,6 +253,9 @@ class Tx_Notify_Domain_Model_Subscription extends Tx_Extbase_DomainObject_Abstra
 	 * @return Tx_Extbase_Persistence_ObjectStorage<Tx_Notify_Domain_Model_UpdatedObject>
 	 */
 	public function getUpdates() {
+		if (!$this->updates) {
+			$this->updates = new Tx_Extbase_Persistence_ObjectStorage();
+		}
 		return $this->updates;
 	}
 
