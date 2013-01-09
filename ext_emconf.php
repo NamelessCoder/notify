@@ -3,7 +3,7 @@
 /***************************************************************
  * Extension Manager/Repository config file for ext "notify".
  *
- * Auto generated 09-01-2013 01:31
+ * Auto generated 09-01-2013 01:33
  *
  * Manual updates:
  * Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Provides everything necessary to control subscriptions to changes in any record or file, along with all the infrastructure to send out fully customized notifications in many different ways. Highly configurable.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '0.3.1',
+	'version' => '0.4.0',
 	'dependencies' => 'cms,extbase,fluid,flux,fluidwidget,fed,vhs',
 	'conflicts' => '',
 	'priority' => '',
