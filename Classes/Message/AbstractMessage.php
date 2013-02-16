@@ -332,11 +332,11 @@ class Tx_Notify_Message_AbstractMessage {
 				foreach ($media as $attachmentContentId => $attachment) {
 					$this->addAttachment($attachment, $attachmentContentId);
 				}
-			} catch (exception $e) {
+			} catch (exception $error) {
 				// avoid error if no attachment
-				if ($e->getCode() != 1243325768) {
-					throw $e;
-
+				$ignorableExceptions = array(1361048339, 1243325768);
+				if (FALSE === in_array($error->getCode(), $ignorableExceptions)) {
+					throw $error;
 				}
 			}
 
